@@ -1,0 +1,28 @@
+{
+  "name": "samtaegi-discord",
+  "version": "1.0.0",
+  "description": "삼태기",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windopper/Samtaegi-discord.git"
+  },
+  "author": "kamilereon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/windopper/Samtaegi-discord/issues"
+  },
+  "homepage": "https://github.com/windopper/Samtaegi-discord#readme",
+  "dependencies": {
+    "@discordjs/opus": "^0.7.0",
+    "@discordjs/voice": "^0.8.0",
+    "discord.js": "^13.6.0",
+    "ffmpeg-static": "^4.4.1",
+    "libsodium-wrappers": "^0.7.9",
+    "ytdl-core": "^4.10.1",
+    "ytdl-core-discord": "^1.3.1"
+  }
+}
