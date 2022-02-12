@@ -7,6 +7,9 @@ const basic_commands = require('./src/commands/basic_commands')
 const music_player_commands = require('./src/commands/music_player_commands')
 const webshot = require('node-webshot')
 const play = require('play-dl')
+const resolve = require('path').resolve
+const file = require('./src/designs/musicQueue');
+const { userMention } = require('@discordjs/builders');
 
 
 
@@ -15,34 +18,35 @@ client.once('ready', () => {
 });
 
 client.on('messageCreate', (message) => {
-    // const embed = new MessageEmbed()
-    //     .setImage('./hello_world.png');
-
 
     if(message.author.bot) return
-
-    // webshot('google.com', 'google.png', function(err) {
-    //     message.channel.send({ files: [{ attachment: "google.png"}] })
-    //   });
     
     basic_commands.listener(message)
     music_player_commands.listener(message, client)
 
-    // if(message.content === 'ping') {
-    //     message.channel.send('pong');
-    // }
-    // if(message.content === '!connect' && message.member.voice.channel) {
-    //     connection = joinVoiceChannel({
-    //         channelId: message.member.voice.channelId,
-    //         guildId: message.guildId,
-    //         adapterCreator: message.guild.voiceAdapterCreator,
-    //     })
-    //     youtube_player.play('https://www.youtube.com/watch?v=FKzhORmAbLs', connection)
-        
-    // }
-    // if(message.content === '!disconnect' && getVoiceConnection(message.guildId) !== undefined) {
-    //     connection.destroy();
-    // }
+    message.channel.send('@'+message.author.id+'')
+    
+
+    if(message.content === 'url') {
+        url = resolve('./src/designs/musicQueue.html')
+        console.log(url)
+        webshot('./src/designs/musicQueue.html', 'google.png', {siteType: "file"}, () => {
+        message.channel.send({files: [{
+            attachment: './google.png',
+            name: 'google.png'
+    }]})
+})
+    }
+
+    // webshot('file:///C:/Users/kwon_notebook/workspace/samtaegi-discord/src/designs/musicQueues.html', 'google.png', () => {
+    //     message.channel.send({files: [{
+    //         attachment: './google.png',
+    //         name: 'google.png'
+    //     }]})
+    // })
+
+
+
 })
 
 client.login(config.BOT_TOKEN)

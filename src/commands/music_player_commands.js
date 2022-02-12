@@ -17,6 +17,9 @@ function listener(message, client) {
         else if(message.content === '!stop') {
             player.stop();
         }
+        else if(message.content === '!shuffle') {
+            player.shuffle(message);
+        }
         else if(message.content === '!pause') {
             player.pause();
         }
