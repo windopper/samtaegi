@@ -1,11 +1,14 @@
 const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
-const { joinVoiceChannel } = require('@discordjs/voice')
+const { joinVoiceChannel, AudioPlayerStatus } = require('@discordjs/voice')
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]});
 const config = require('./config.json');
 const basic_commands = require('./src/commands/basic_commands')
 const music_player_commands = require('./src/commands/music_player_commands')
 const webshot = require('node-webshot')
+const play = require('play-dl')
+
+
 
 client.once('ready', () => {
     console.log('Ready!');
@@ -24,8 +27,6 @@ client.on('messageCreate', (message) => {
     
     basic_commands.listener(message)
     music_player_commands.listener(message, client)
-    
-    
 
     // if(message.content === 'ping') {
     //     message.channel.send('pong');

@@ -1,38 +1,68 @@
-const music_player = require('../functions/music_player')
+const { joinVoiceChannel } = require('@discordjs/voice')
+const { MusicManager } = require('../functions/musicPlayer')
+
+const Players = new Map()
 
 function listener(message, client) {
     let contents = message.content.split(" ")
-    if(message.content === '!connect') {
-        if(message.member.voice.channel) {
-            music_player.connect(message.member.voice.channelId, message.guildId, message.guild.voiceAdapterCreator);
+    let guildId = message.guildId
+
+    if(Players.has(guildId)) {
+        let player = Players.get(guildId)
+
+        if(message.content === '!disconnect') {
+             player.disconnect();
+             Players.delete(guildId)
         }
-        else {
-            message.channel.send(`:x: ${message.author.username}님이 음성채널에 없습니다`)
+        else if(message.content === '!stop') {
+            player.stop();
+        }
+        else if(message.content === '!pause') {
+            player.pause();
+        }
+        else if(message.content === '!unpause') {
+            player.unpause();
+        }
+        else if(message.content === '!list') {
+            player.showQueue(message);
+        }
+        else if(message.content === '!skip') {
+            player.skip(message.channel);
+        }
+        else if(contents.length === 2) {
+            if(contents[0] === '!yt') {
+                player.addQueue(contents[1], message)
+            }
         }
     }
-    else if(message.content === '!disconnect') {
-         music_player.disconnect();
-    }
-    else if(message.content === '!stop') {
-        music_player.stop();
-    }
-    else if(message.content === '!pause') {
-        music_player.pause();
-    }
-    else if(message.content === '!unpause') {
-        music_player.unpause();
-    }
-    else if(message.content === '!list') {
-        music_player.showQueue(message);
-    }
-    else if(message.content === '!skip') {
-        music_player.skip(message);
-    }
-    else if(contents.length === 2) {
-        if(contents[0] === '!yt') {
-            music_player.addQueue(contents[1], message)
+    else {
+        if(message.content === '!connect') {
+            if(message.member.voice.channel) {
+                initializer(message)
+            }
+            else {
+                message.channel.send(`:x: ${message.author.username}님이 음성채널에 없습니다`)
+            }
+        }
+        else if(contents.length === 2) {
+            if(contents[0] === '!yt') {
+                initializer(message)
+                let player = Players.get(guildId)
+                player.addQueue(contents[1], message)
+            }
         }
     }
+}
+
+function initializer(message) {
+    let guildId = message.guildId
+    Players.set(guildId, new MusicManager(
+        joinVoiceChannel({
+            channelId: message.member.voice.channelId,
+            guildId: message.guildId,
+            adapterCreator: message.guild.voiceAdapterCreator,
+        })
+    ))
 }
 
 module.exports = {
