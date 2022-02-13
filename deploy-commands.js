@@ -21,8 +21,8 @@ function deploy_commands() {
         .setName('p')
         .setDescription('음악을 재생합니다')
         .addStringOption(option =>
-            option.setName('url')
-                .setDescription('SoundCloudTrack | SoundCloudPlayList | YouTubeVideo | YouTubePlayList')
+            option.setName('urlorsearch')
+                .setDescription('SoundCloudTrack | SoundCloudPlayList | YouTubeVideo | YouTubePlayList | YouTubeSearch 을(를) 지원합니다')
                 .setRequired(true)),
         new SlashCommandBuilder()
             .setName('connect')
@@ -64,7 +64,9 @@ function deploy_commands() {
 ,
     ].map((command) => command.toJSON());
     
-    const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
+    const { BOT_TOKEN } = require('./config.json')
+
+    const rest = new REST({ version: '9' }).setToken(BOT_TOKEN);
     
     let clientId = '939823628541915196'
     let guildId = '833265340468297738'
@@ -93,9 +95,9 @@ function deploy_commands() {
         .then(() => console.log('Successfully registered application commands.'))
         .catch(console.error);
 
-    // rest.put(Routes.applicationGuildCommands(clientId, guildId), {body: commands})
-    //     .then(()=> console.log('Successfully registered application commands.'))
-    //     .catch(console.error)
+    rest.put(Routes.applicationGuildCommands(clientId, guildId), {body: commands})
+        .then(()=> console.log('Successfully registered application commands.'))
+        .catch(console.error)
 }
 
 module.exports = {

@@ -49,7 +49,7 @@ function listener(interaction) {
             player.addQueue('https://www.youtube.com/watch?v=zEYpydNwgDc', interaction)
         }
         else if(commandName === 'p') {
-            player.addQueue(interaction.options.getString('url'), interaction)
+            player.addQueue(interaction.options.getString('urlorsearch'), interaction)
         }
     }
     else {
@@ -72,7 +72,7 @@ function listener(interaction) {
             initializer(interaction)
             if(Players.has(guildId)) {
                 let player = Players.get(guildId)
-                player.addQueue(interaction.options.getString('url'), interaction)
+                player.addQueue(interaction.options.getString('urlorsearch'), interaction)
             }
         }
         else if(commandName === '삼태기') {

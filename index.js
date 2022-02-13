@@ -14,16 +14,14 @@ const { menuSelect } = require('./src/functions/musicMenuSelect')
 
 client.on('ready', () => {
     console.log('Ready!');
-    console.log(process.env.BOT_TOKEN)
     // deploy_commands()
 });
 
 client.on('interactionCreate', async interaction => {
 
-    
     if(interaction.isSelectMenu()) {
+        interaction.editReply().then((e)=>e.deletable)
         menuSelect(interaction)
-        
     }
     else if(!interaction.isCommand()) return;
 

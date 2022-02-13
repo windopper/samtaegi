@@ -162,7 +162,6 @@ class MusicManager {
             })
             return
         }
-
         /**
          * 
          * Get SoundCloud Free Client when youtube url is not valid
