@@ -1,5 +1,5 @@
 const { createAudioPlayer, createAudioResource, AudioPlayerStatus, StreamType, joinVoiceChannel } = require('@discordjs/voice')
-const { VoiceChannel, MessageEmbed, MessageActionRow, MessageButton } = require('discord.js')
+const { VoiceChannel, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js')
 const ytdl = require('ytdl-core-discord')
 const alert = require('../messages/music_message')
 const playdl = require('play-dl')
@@ -75,7 +75,7 @@ class MusicManager {
     async addQueue(url, interaction) {
 
         interaction.deferReply()
-
+        
         let title
         let duration
         let thumbnails
@@ -83,7 +83,7 @@ class MusicManager {
         /**
          * YouTube url listener
          */
-        if(await playdl.yt_validate(url) == 'video') {
+        if(url.startsWith('http') && await playdl.yt_validate(url) == 'video') {
             await playdl.video_basic_info(url).then((e)=> {
                 title = e.video_details.title
                 duration = e.video_details.durationInSec
@@ -102,7 +102,65 @@ class MusicManager {
                 content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다")
             })
             return
+        }
+        else if(url.startsWith('http') && await playdl.yt_validate(url) == 'playlist') {
+            let trackName
+            let tracks
+            let trackCount
+            await playdl.playlist_info(url, { incomplete: true }).then((e) => {
+                trackName = e.title
+                trackCount = e.total_videos
+            })
 
+            tracks = await (await playdl.playlist_info(url, { incomplete: true })).all_videos()
+
+            for(let track of tracks) {
+                let queue = {
+                    url: track.url,
+                    title: track.title,
+                    duration: track.durationInSec,
+                }
+                this.queue.push(queue)
+                if(this.queue.length==1) this.play(queue.url)
+            }
+            
+            interaction.editReply({
+                content: alert.positive("**[ "+trackName+" ]** 플레이리스트 **"+trackCount+"곡** 이(가) 성공적으로 큐에 등록되었습니다")
+            })
+            return
+        }
+        /**
+         * 유튜브 검색
+         */
+        else if(await playdl.yt_validate(url) == 'search') {
+            const searched = await playdl.search(url, { source: { youtube: 'video'}, limit: 5})
+
+            let menus = []
+            let count = 1
+            for(let video of searched) {
+                menus.push(
+                    {
+                        label: video.title,
+                        description: 'YouTubeVideo | 길이: ['+this.secToHMS(video.durationInSec)+']',
+                        value: video.url
+                    }
+                )
+            }
+            
+
+            const row = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('track select')
+                        .setPlaceholder('검색결과 상위 5개 중 하나를 선택해주세요')
+                        .addOptions(menus)
+                )
+
+            interaction.editReply({
+                content: "'"+url+"' 의 검색 결과 상위 5개를 추출했습니다",
+                components: [row],
+            })
+            return
         }
 
         /**
@@ -122,7 +180,7 @@ class MusicManager {
          * 
          */
 
-        if(so_validate == 'track') {
+        if(url.startsWith('http') && so_validate == 'track') {
             console.log('track')
             await playdl.soundcloud(url).then((e)=> {
                 console.log(e.user)
@@ -150,7 +208,7 @@ class MusicManager {
          * SoundCloud PlayList url listener
          * 
          */
-        if(so_validate == 'playlist') {
+        if(url.startsWith('http') && so_validate == 'playlist') {
 
             let tracks
             let trackName
@@ -179,7 +237,7 @@ class MusicManager {
         }
 
         interaction.editReply({
-            content: alert.negative('올바르지 않은 url 형식입니다. *지원 형식 [ YouTubeVideo | SoundCloudTrack | SoundCloudPlayList ]*')
+            content: alert.negative('올바르지 않은 url 형식입니다. *지원 형식 [ YouTubeVideo | YouTubePlayList | SoundCloudTrack | SoundCloudPlayList ]*')
         })
     }
 
@@ -293,8 +351,6 @@ class MusicManager {
             })
         }
     }
-
-
 }
 
 module.exports = {

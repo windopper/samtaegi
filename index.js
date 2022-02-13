@@ -9,18 +9,25 @@ const play = require('play-dl')
 const resolve = require('path').resolve
 const file = require('./src/designs/musicQueue');
 const { deploy_commands } = require('./deploy-commands')
+const { menuSelect } = require('./src/functions/musicMenuSelect')
 
 
 client.on('ready', () => {
     console.log('Ready!');
     console.log(process.env.BOT_TOKEN)
-    deploy_commands()
+    // deploy_commands()
 });
 
 client.on('interactionCreate', async interaction => {
 
-    if(!interaction.isCommand()) return;
+    
+    if(interaction.isSelectMenu()) {
+        menuSelect(interaction)
+        
+    }
+    else if(!interaction.isCommand()) return;
 
+    
     try {
         music_player_commands.listener(interaction)
     }

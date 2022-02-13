@@ -22,7 +22,7 @@ function deploy_commands() {
         .setDescription('음악을 재생합니다')
         .addStringOption(option =>
             option.setName('url')
-                .setDescription('SoundCloudTrack | SoundCloudPlayList | YouTubeVideo')
+                .setDescription('SoundCloudTrack | SoundCloudPlayList | YouTubeVideo | YouTubePlayList')
                 .setRequired(true)),
         new SlashCommandBuilder()
             .setName('connect')

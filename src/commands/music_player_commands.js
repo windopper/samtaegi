@@ -112,5 +112,7 @@ function warningVoiceConnect(interaction) {
 }
 
 module.exports = {
-    listener: listener
+    listener: listener,
+    initializer: initializer,
+    Players: Players
 }
