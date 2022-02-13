@@ -1,71 +1,114 @@
 const { joinVoiceChannel } = require('@discordjs/voice')
+const { IntegrationApplication } = require('discord.js')
 const { MusicManager } = require('../functions/musicPlayer')
+const { positive } = require('../messages/music_message')
 
 const Players = new Map()
 
-function listener(message, client) {
-    let contents = message.content.split(" ")
-    let guildId = message.guildId
+function listener(interaction) {
+
+    let guildId = interaction.guildId
+    let commandName = interaction.commandName
 
     if(Players.has(guildId)) {
         let player = Players.get(guildId)
 
-        if(message.content === '!disconnect') {
-             player.disconnect();
+        if(commandName === 'connect') {
+            if(initializer(interaction)) {
+                interaction.reply({
+                    content: positive(`**${interaction.member.voice.channel.name} **에 연결되었습니다`)
+                })
+            }
+        }
+        else if(commandName === 'disconnect') {
+             player.disconnect(interaction);
              Players.delete(guildId)
         }
-        else if(message.content === '!stop') {
-            player.stop();
+        else if(commandName === 'stop') {
+            player.stop(interaction);
         }
-        else if(message.content === '!shuffle') {
-            player.shuffle(message);
+        else if(commandName === 'shuffle') {
+            player.shuffle(interaction);
         }
-        else if(message.content === '!pause') {
-            player.pause();
+        else if(commandName === 'pause') {
+            player.pause(interaction);
         }
-        else if(message.content === '!unpause') {
-            player.unpause();
+        else if(commandName === 'unpause') {
+            player.unpause(interaction);
         }
-        else if(message.content === '!list') {
-            player.showQueue(message);
+        else if(commandName === 'list') {
+            player.showQueue(interaction);
         }
-        else if(message.content === '!skip') {
-            player.skip(message.channel);
+        else if(commandName === 'skip') {
+            player.skip(interaction);
         }
-        else if(contents.length === 2) {
-            if(contents[0] === '!yt') {
-                player.addQueue(contents[1], message)
-            }
+        else if(commandName === 'repeat') {
+            player.repeat(interaction, interaction.options.getString('options'))
+        }
+        else if(commandName === '삼태기') {
+            player.addQueue('https://www.youtube.com/watch?v=zEYpydNwgDc', interaction)
+        }
+        else if(commandName === 'p') {
+            player.addQueue(interaction.options.getString('url'), interaction)
         }
     }
     else {
-        if(message.content === '!connect') {
-            if(message.member.voice.channel) {
-                initializer(message)
-            }
-            else {
-                message.channel.send(`:x: ${message.author.username}님이 음성채널에 없습니다`)
+        if(commandName === 'connect') {
+            if(initializer(interaction)) {
+                interaction.reply({
+                    content: positive(`**${interaction.member.voice.channel.name} **에 연결되었습니다`)
+                })
             }
         }
-        else if(contents.length === 2) {
-            if(contents[0] === '!yt') {
-                initializer(message)
+        else if(commandName === 'disconnect') warningVoiceConnect()
+        else if(commandName === 'stop') warningVoiceConnect()
+        else if(commandName === 'shuffle') warningVoiceConnect()
+        else if(commandName === 'pause') warningVoiceConnect()
+        else if(commandName === 'unpause') warningVoiceConnect()
+        else if(commandName === 'list') warningVoiceConnect()
+        else if(commandName === 'skip') warningVoiceConnect()
+        else if(commandName === 'repeat') warningVoiceConnect()
+        else if(commandName === 'p') {
+            initializer(interaction)
+            if(Players.has(guildId)) {
                 let player = Players.get(guildId)
-                player.addQueue(contents[1], message)
+                player.addQueue(interaction.options.getString('url'), interaction)
+            }
+        }
+        else if(commandName === '삼태기') {
+            initializer(interaction)
+            if(Players.has(guildId)) {
+                let player = Players.get(guildId)
+                player.addQueue('https://www.youtube.com/watch?v=zEYpydNwgDc', interaction)
             }
         }
     }
 }
 
-function initializer(message) {
-    let guildId = message.guildId
-    Players.set(guildId, new MusicManager(
-        joinVoiceChannel({
-            channelId: message.member.voice.channelId,
-            guildId: message.guildId,
-            adapterCreator: message.guild.voiceAdapterCreator,
+function initializer(interaction) {
+    if(interaction.member.voice.channel) {
+        let guildId = interaction.guildId
+        Players.set(guildId, new MusicManager(
+            joinVoiceChannel({
+                channelId: interaction.member.voice.channelId,
+                guildId: interaction.guildId,
+                adapterCreator: interaction.guild.voiceAdapterCreator,
+            })
+        ))
+        return true
+    }
+    else {
+        interaction.reply({
+            content: `:x: ${message.author.username}님이 음성채널에 없습니다`
         })
-    ))
+        return false
+    }
+}
+
+function warningVoiceConnect(interaction) {
+    interaction.reply({
+        content: ":x: 음성채널에 연결되어 있지 않습니다",
+    });
 }
 
 module.exports = {

@@ -9,34 +9,47 @@ const webshot = require('node-webshot')
 const play = require('play-dl')
 const resolve = require('path').resolve
 const file = require('./src/designs/musicQueue');
-const { userMention } = require('@discordjs/builders');
+const { deploy_commands } = require('./deploy-commands')
 
 
-
-client.once('ready', () => {
+client.on('ready', () => {
     console.log('Ready!');
+    console.log(process.env.BOT_TOKEN)
+    deploy_commands()
 });
+
+client.on('interactionCreate', async interaction => {
+
+    if(!interaction.isCommand()) return;
+
+    try {
+        music_player_commands.listener(interaction)
+    }
+    catch(err) {
+        interaction.reply({
+            content: '오류가 발생하였습니다'
+        })
+    }
+})
+
 
 client.on('messageCreate', (message) => {
 
     if(message.author.bot) return
     
     basic_commands.listener(message)
-    music_player_commands.listener(message, client)
+    music_player_commands.listener(message)
 
-    message.channel.send('@'+message.author.id+'')
-    
-
-    if(message.content === 'url') {
-        url = resolve('./src/designs/musicQueue.html')
-        console.log(url)
-        webshot('./src/designs/musicQueue.html', 'google.png', {siteType: "file"}, () => {
-        message.channel.send({files: [{
-            attachment: './google.png',
-            name: 'google.png'
-    }]})
-})
-    }
+//     if(message.content === 'url') {
+//         let url = resolve('./src/designs/musicQueue.html')
+//         console.log(url)
+//         webshot('./src/designs/musicQueue.html', 'google.png', {siteType: "file"}, () => {
+//         message.channel.send({files: [{
+//             attachment: './google.png',
+//             name: 'google.png'
+//     }]})
+// })
+//     }
 
     // webshot('file:///C:/Users/kwon_notebook/workspace/samtaegi-discord/src/designs/musicQueues.html', 'google.png', () => {
     //     message.channel.send({files: [{
@@ -49,4 +62,6 @@ client.on('messageCreate', (message) => {
 
 })
 
-client.login(config.BOT_TOKEN)
+
+if(process.env.BOT_TOKEN == undefined) client.login(config.BOT_TOKEN)
+else client.login(process.env.BOT_TOKEN)
