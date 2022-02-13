@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const { MessageEmbed } = require('discord.js')
 const { joinVoiceChannel, AudioPlayerStatus } = require('@discordjs/voice')
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]});
-const config = require('./config.json');
+// const config = require('./config.json');
 const basic_commands = require('./src/commands/basic_commands')
 const music_player_commands = require('./src/commands/music_player_commands')
 const webshot = require('node-webshot')
@@ -63,5 +63,8 @@ client.on('messageCreate', (message) => {
 })
 
 
-if(process.env.BOT_TOKEN == undefined) client.login(config.BOT_TOKEN)
-else client.login(process.env.BOT_TOKEN)
+
+client.login(process.env.BOT_TOKEN)
+
+// if(process.env.BOT_TOKEN == undefined) client.login(config.BOT_TOKEN)
+// else client.login(process.env.BOT_TOKEN)
