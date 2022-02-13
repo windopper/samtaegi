@@ -20,7 +20,6 @@ client.on('ready', () => {
 client.on('interactionCreate', async interaction => {
 
     if(interaction.isSelectMenu()) {
-        interaction.editReply().then((e)=>e.deletable)
         menuSelect(interaction)
     }
     else if(!interaction.isCommand()) return;

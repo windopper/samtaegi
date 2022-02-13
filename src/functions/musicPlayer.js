@@ -180,9 +180,7 @@ class MusicManager {
          */
 
         if(url.startsWith('http') && so_validate == 'track') {
-            console.log('track')
             await playdl.soundcloud(url).then((e)=> {
-                console.log(e.user)
                 title = e.user.name+' - '+e.name
                 duration = e.durationInSec
             })
