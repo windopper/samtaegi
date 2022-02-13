@@ -64,7 +64,7 @@ function deploy_commands() {
 ,
     ].map((command) => command.toJSON());
     
-    const rest = new REST({ version: '9' }).setToken(BOT_TOKEN);
+    const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN);
     
     let clientId = '939823628541915196'
     let guildId = '833265340468297738'
