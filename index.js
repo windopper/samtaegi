@@ -1,4 +1,5 @@
 const Discord = require('discord.js')
+const express = require('express')
 const { MessageEmbed } = require('discord.js')
 const { joinVoiceChannel, AudioPlayerStatus } = require('@discordjs/voice')
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]});
@@ -44,8 +45,8 @@ client.on('messageCreate', (message) => {
 
     if(message.author.bot) return
     
-    basic_commands.listener(message)
-    music_player_commands.listener(message)
+    // basic_commands.listener(message)
+    // music_player_commands.listener(message)
 
 //     if(message.content === 'url') {
 //         let url = resolve('./src/designs/musicQueue.html')
@@ -69,12 +70,30 @@ client.on('messageCreate', (message) => {
 
 })
 
+const app = express()
+const path = require('path')
+const port = 3000
+
+app.use(express.static(path.join(__dirname, 'src/react-project/build')))
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/src/react-project/build/index.html'))
+    // res.send('Hello World!')
+})
+
+app.listen(port, () => {
+    console.log(`Example App Listening on port ${port}`)
+})
 
 
-client.login(process.env.BOT_TOKEN)
 
-// const config = require('./config.json');
-// client.login(config.BOT_TOKEN)
 
-// if(process.env.BOT_TOKEN == undefined) client.login(config.BOT_TOKEN)
-// else client.login(process.env.BOT_TOKEN)
+// client.login(process.env.BOT_TOKEN)
+
+const config = require('./config.json');
+const { appendFile } = require('fs');
+const { dir } = require('console');
+client.login(config.BOT_TOKEN)
+
+// const React = require('react')
+// const ReactDom = require('react-dom')
+// ReactDom.render(<h1>Hello React App</h1>, document.getElementById('root'));

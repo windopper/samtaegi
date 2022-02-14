@@ -41,7 +41,7 @@ function listener(interaction) {
         }
         else if(commandName === 'skip') {
             player.skip(interaction);
-        }
+        } 
         else if(commandName === 'repeat') {
             player.repeat(interaction, interaction.options.getString('options'))
         }
@@ -60,14 +60,14 @@ function listener(interaction) {
                 })
             }
         }
-        else if(commandName === 'disconnect') warningVoiceConnect()
-        else if(commandName === 'stop') warningVoiceConnect()
-        else if(commandName === 'shuffle') warningVoiceConnect()
-        else if(commandName === 'pause') warningVoiceConnect()
-        else if(commandName === 'unpause') warningVoiceConnect()
-        else if(commandName === 'list') warningVoiceConnect()
-        else if(commandName === 'skip') warningVoiceConnect()
-        else if(commandName === 'repeat') warningVoiceConnect()
+        else if(commandName === 'disconnect') warningVoiceConnect(interaction)
+        else if(commandName === 'stop') warningVoiceConnect(interaction)
+        else if(commandName === 'shuffle') warningVoiceConnect(interaction)
+        else if(commandName === 'pause') warningVoiceConnect(interaction)
+        else if(commandName === 'unpause') warningVoiceConnect(interaction)
+        else if(commandName === 'list') warningVoiceConnect(interaction)
+        else if(commandName === 'skip') warningVoiceConnect(interaction)
+        else if(commandName === 'repeat') warningVoiceConnect(interaction)
         else if(commandName === 'p') {
             initializer(interaction)
             if(Players.has(guildId)) {
@@ -99,7 +99,7 @@ function initializer(interaction) {
     }
     else {
         interaction.reply({
-            content: `:x: ${message.author.username}님이 음성채널에 없습니다`
+            content: `:x: ${interaction.user.username}님이 음성채널에 없습니다`
         })
         return false
     }
