@@ -87,12 +87,10 @@ app.listen(port, () => {
 
 
 
-// client.login(process.env.BOT_TOKEN)
+client.login(process.env.BOT_TOKEN)
 
-const config = require('./config.json');
-const { appendFile } = require('fs');
-const { dir } = require('console');
-client.login(config.BOT_TOKEN)
+// const config = require('./config.json');
+// client.login(config.BOT_TOKEN)
 
 // const React = require('react')
 // const ReactDom = require('react-dom')
