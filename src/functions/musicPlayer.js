@@ -74,7 +74,7 @@ class MusicManager {
 
     async addQueue(url, interaction) {
 
-        interaction.deferReply()
+        await interaction.deferReply()
         
         let title
         let duration
@@ -155,11 +155,21 @@ class MusicManager {
                         .setPlaceholder('검색결과 상위 5개 중 하나를 선택해주세요')
                         .addOptions(menus)
                 )
+            
+            if(menus.length > 0) {
+                interaction.editReply({
+                     content: "'"+url+"' 의 검색 결과 상위 5개를 추출했습니다",
+                    components: [row],
+                })
+            }
+            else {
+                interaction.editReply({
+                    content: "'"+url+"' 에 대한 검색 결과가 없습니다 :scream::scream::scream:",
+                    components: [],
+                })
+            }
 
-            interaction.editReply({
-                content: "'"+url+"' 의 검색 결과 상위 5개를 추출했습니다",
-                components: [row],
-            })
+
             return
         }
         /**
@@ -234,7 +244,7 @@ class MusicManager {
         }
 
         interaction.editReply({
-            content: alert.negative('올바르지 않은 url 형식입니다. *지원 형식 [ YouTubeVideo | YouTubePlayList | SoundCloudTrack | SoundCloudPlayList ]*')
+            content: alert.negative('올바르지 않은 url 형식입니다. *지원 형식 [ YouTubeVideo | YouTubePlayList | SoundCloudTrack | SoundCloudPlayList | YouTubeSearch ]*')
         })
     }
 
@@ -266,12 +276,16 @@ class MusicManager {
             return
         }
         let s = ''
+        let repeat = '\n'
         let i = 0
+
+        if(this.songrepeat) repeat = "`현재 반복 범위: 현재음악`\n\n"
+        else if(this.queuerepeat) repeat = "`현재 반복 범위: 모든음악`\n\n"
 
         for(let q of this.queue) {
             let temp = s
             if(i===0) {
-                s+= '현재 재생 중 - **'+q.title+'** ['+this.secToHMS(q.duration)+']\n\n'
+                s+= '현재 재생 중 - **'+q.title+'** ['+this.secToHMS(q.duration)+']\n'+repeat
             }
             else {
                 s += i+'. **'+q.title+'** ['+this.secToHMS(q.duration)+']\n'
@@ -312,17 +326,35 @@ class MusicManager {
     }
 
     skip(interaction) {
-        let title = this.queue[0].title
-
-        interaction.reply({
-            content: '**'+title+'** 이(가) 스킵되었습니다!'
-        })
-        this.audioPlayer.stop()
+        
         if(this.queue.length==0) {
             interaction.reply({
                 content: alert.negative('스킵 할 음악이 없습니다')
             })
         }
+        else if(this.queue.length==1) {
+            let title = this.queue[0].title
+
+            if(this.songrepeat || this.queuerepeat) {
+                interaction.reply({
+                    content: '**'+title+'** 이(가) 스킵되었습니다!\n:arrow_forward: 다음 음악: **'+title+'**'
+                })
+            }
+            interaction.reply({
+                content: '**'+title+'** 이(가) 스킵되었습니다!'
+            })
+        }
+        else {
+            let title = this.queue[0].title
+            let nextTitle
+            if(this.songrepeat) nextTitle = this.queue[0].title
+            else nextTitle = this.queue[1].title
+
+            interaction.reply({
+                content: '**'+title+'** 이(가) 스킵되었습니다!\n:arrow_forward: 다음 음악: **'+nextTitle+'**'
+            })
+        }
+        this.audioPlayer.stop()
     }
 
     repeat(interaction, keyword) {

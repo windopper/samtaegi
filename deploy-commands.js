@@ -2,19 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 
-function deploy_commands() {
-
-    // const data = new SlashCommandBuilder()
-    // .setName("repeat")
-    // .setDescription("삼태기 봇의 반복여부를 설정합니다")
-    // .addStringOption((o) => {
-    //   o.setName("options")
-    //     .setDescription("반복 여부를 설정합니다")
-    //     .setRequired(true)
-    //     .addChoice("none", "none")
-    //     .addChoice("song", "song")
-    //     .addChoice("queue", "queue");
-// })       
+function deploy_commands() {   
 
     const commands = [
         new SlashCommandBuilder()

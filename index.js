@@ -14,6 +14,9 @@ const { menuSelect } = require('./src/functions/musicMenuSelect')
 
 client.on('ready', () => {
     console.log('Ready!');
+    client.user.setActivity("'/p' 로 음악 재생", {
+        type: 'PLAYING'
+    })
     // deploy_commands()
 });
 
@@ -32,6 +35,7 @@ client.on('interactionCreate', async interaction => {
         interaction.reply({
             content: '오류가 발생하였습니다'
         })
+        console.log(err)
     }
 })
 

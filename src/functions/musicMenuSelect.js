@@ -24,7 +24,7 @@ function menuSelect(interaction) {
 
 async function addMusicToQueue(url, interaction, player) {
 
-    interaction.deferUpdate()
+    await interaction.deferUpdate()
 
     let title
     let duration
