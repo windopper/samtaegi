@@ -1,16 +1,43 @@
 const Discord = require('discord.js')
-const express = require('express')
-const { MessageEmbed } = require('discord.js')
-const { joinVoiceChannel, AudioPlayerStatus } = require('@discordjs/voice')
 const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]});
 const basic_commands = require('./src/commands/basic_commands')
 const music_player_commands = require('./src/commands/music_player_commands')
 const webshot = require('node-webshot')
 const play = require('play-dl')
-const resolve = require('path').resolve
 const file = require('./src/designs/musicQueue');
 const { deploy_commands } = require('./deploy-commands')
 const { menuSelect } = require('./src/functions/musicMenuSelect')
+
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io")
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST']
+    }
+})
+
+const test = require("./src/server/test")
+const port = process.env.PORT || 5000
+
+app.use(test)
+app.get('/', (req, res) => {
+    res.send('hi')
+})
+
+io.on('connection', (s) => {
+    console.log('new connection!')
+    console.log(music_player_commands.Players.size)
+    io.emit('test', music_player_commands.Players.size)
+})
+
+server.listen(port, () => {
+    console.log(`Socket IO server Listening on port ${port}`)
+})
+
 
 
 client.on('ready', () => {
@@ -30,7 +57,8 @@ client.on('interactionCreate', async interaction => {
 
     
     try {
-        music_player_commands.listener(interaction)
+        music_player_commands.listener(interaction, io)
+        console.log(music_player_commands.Players.keys.length)
     }
     catch(err) {
         interaction.reply({
@@ -44,53 +72,15 @@ client.on('interactionCreate', async interaction => {
 client.on('messageCreate', (message) => {
 
     if(message.author.bot) return
-    
-    // basic_commands.listener(message)
-    // music_player_commands.listener(message)
-
-//     if(message.content === 'url') {
-//         let url = resolve('./src/designs/musicQueue.html')
-//         console.log(url)
-//         webshot('./src/designs/musicQueue.html', 'google.png', {siteType: "file"}, () => {
-//         message.channel.send({files: [{
-//             attachment: './google.png',
-//             name: 'google.png'
-//     }]})
-// })
-//     }
-
-    // webshot('file:///C:/Users/kwon_notebook/workspace/samtaegi-discord/src/designs/musicQueues.html', 'google.png', () => {
-    //     message.channel.send({files: [{
-    //         attachment: './google.png',
-    //         name: 'google.png'
-    //     }]})
-    // })
-
-
-
-})
-
-const app = express()
-const path = require('path')
-const port = process.env.PORT || 3000
-
-app.use(express.static(path.join(__dirname, 'src/react-project/build')))
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/src/react-project/build/index.html'))
-    // res.send('Hello World!')
-})
-
-app.listen(port, () => {
-    console.log(`Example App Listening on port ${port}`)
 })
 
 
 
 
-client.login(process.env.BOT_TOKEN)
+// client.login(process.env.BOT_TOKEN)
 
-// const config = require('./config.json');
-// client.login(config.BOT_TOKEN)
+const config = require('./config.json');
+client.login(config.BOT_TOKEN)
 
 // const React = require('react')
 // const ReactDom = require('react-dom')

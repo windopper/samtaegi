@@ -5,7 +5,7 @@ const { positive } = require('../messages/music_message')
 
 const Players = new Map()
 
-function listener(interaction) {
+function listener(interaction, io) {
 
     let guildId = interaction.guildId
     let commandName = interaction.commandName
@@ -83,6 +83,14 @@ function listener(interaction) {
             }
         }
     }
+
+    emitter(io, guildId)
+}
+
+function emitter(io, guildId) {
+    io.emit('voicechannelInfo', {
+        size: Players.size,
+    })
 }
 
 function initializer(interaction) {

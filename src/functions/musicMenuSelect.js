@@ -2,7 +2,8 @@ const music_player_commands = require('../commands/music_player_commands')
 const playdl = require('play-dl')
 const alert = require('../messages/music_message')
 
-function menuSelect(interaction) {
+function menuSelect(interaction, io) {
+
 
     if(!interaction.isSelectMenu()) return
     if(interaction.component.customId != 'track select') return
