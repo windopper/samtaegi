@@ -36,9 +36,27 @@
   border-color: transparent transparent transparent #404040;
 }
 
-.skip {
+#skip {
   position: relative;
-  height: 26px;
-  left: 40px;
+  left: 55px;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#skip:hover {
+  color: #404040;
+}
+
+#repeat {
+  position: inherit;
+  right: 40px;
+  color: white;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+#repeat:hover {
+  color: #404040
 }
 

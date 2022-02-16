@@ -1,0 +1,23 @@
+.board {
+    position: fixed;
+    width: 100%;
+    top: 15px;
+    height: 230px;
+    background-color: rgb(189, 145, 189);
+    display: flex;
+}
+
+.thumbnail {
+    position: relative;
+    border-radius: 25%;
+    left: 5%;
+    top: 5%;
+    height: 90%;
+}
+
+.title {
+    position: relative;
+    color:aliceblue;
+    font-size: 23px;
+    font-size-adjust: inherit;
+}

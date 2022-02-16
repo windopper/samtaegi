@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react"
 import { io } from 'socket.io-client'
 import './Queue.css'
+import Board from './Board'
 
 const defaultSocket = io('http://localhost:5000')
 
@@ -39,7 +40,8 @@ export default function Queue(params) {
     }
 
     return (
-        <div className='queue-container'>  
+        <div className='queue-container'> 
+            <Board queue={queue}/>
         {
             queues()
         }

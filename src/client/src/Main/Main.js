@@ -6,6 +6,7 @@ import Search from './Search'
 import Queue from './Queue'
 import Controller from './Controller'
 import Menu from './Menu'
+import Board from './Board'
 
 
 function Main() {

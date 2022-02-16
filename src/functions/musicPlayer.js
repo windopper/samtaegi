@@ -4,6 +4,7 @@ const ytdl = require('ytdl-core-discord')
 const alert = require('../messages/music_message')
 const playdl = require('play-dl')
 const socketEmitter = require('../functions/musicPlayer_socketEmitter')
+const musicPlayer_socketEmitter = require('../functions/musicPlayer_socketEmitter')
 
 class MusicManager {
 
@@ -397,6 +398,7 @@ class MusicManager {
                 content: alert.positive('반복 범위를 "모든 음악"으로 설정하였습니다')
             })
         }
+        musicPlayer_socketEmitter.emitRepeat(this.songrepeat, this.queuerepeat, this.guildId, this.io)
     }
 
     getData() {

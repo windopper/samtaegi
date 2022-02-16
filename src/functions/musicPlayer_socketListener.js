@@ -1,5 +1,6 @@
 const { SpeakingMap } = require('@discordjs/voice')
 const { Players } = require('../commands/music_player_commands')
+const { emitRepeat } = require('./musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('./musicPlayer_socketEmitter')
 
 function Listener(socket, io) {
@@ -30,6 +31,28 @@ function Listener(socket, io) {
         guildId = s.guildId
         skip(guildId)
     })
+
+    socket.on('repeat', s => {
+        guildId = s.guildId
+        repeat(guildId, s.repeat)
+    })
+}
+
+function repeat(guildId, repeat) {
+    if(isValid(guildId)) {
+        if(repeat === 'song') {
+            Players.get(guildId).songrepeat = true
+            Players.get(guildId).queuerepeat = false
+        }
+        else if(repeat === 'queue') {
+            Players.get(guildId).songrepeat = false
+            Players.get(guildId).queuerepeat = true
+        }
+        else {
+            Players.get(guildId).songrepeat = false
+            Players.get(guildId).queuerepeat = false
+        }
+    }
 }
 
 function pause(guildId) {

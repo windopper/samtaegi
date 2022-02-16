@@ -1,12 +1,57 @@
 import './Controller.css'
 import { io } from 'socket.io-client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const defaultSocket = io('http://localhost:5000')
 
 export default function Controller(params) {
+
     const guildId = params.guildId
+
     const [pause, setPause] = useState(false)
+    const [repeat, setRepeat] = useState('none')
+
+    const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
+
+    useEffect(() => {
+        defaultSocket.emit('requestData', guildId)
+        socket.on('fetchData', s => {
+            if(s.songrepeat) setRepeat('song')
+            else if(s.queuerepeat) setRepeat('queue')
+            else setRepeat('none')
+        })
+        socket.on('MUSIC_PLAYER_REPEAT', s => {
+            if(s.songrepeat) setRepeat('song')
+            else if(s.queuerepeat) setRepeat('queue')
+            else setRepeat('none')
+        })
+    }, [])
+
+    const cycleRepeat = () => {
+        if(repeat === 'song') {
+            setRepeat('queue')
+            console.log('queue')
+        }
+        else if(repeat === 'queue') {
+            setRepeat('none')
+            console.log('none')
+        }
+        else {
+            setRepeat('song')
+            console.log('song')
+        }
+
+        defaultSocket.emit('repeat', {
+            guildId: guildId,
+            repeat: repeat
+        })
+    }
+
+    const repeatIcon = () => {
+        if(repeat === 'song') return <i className="fa-solid fa-repeat" onClick={cycleRepeat} id='repeat'></i>
+        else if(repeat === 'queue') return <i className="fa-solid fa-repeat" id="repeat" onClick={cycleRepeat}></i>
+        else return <i className="fa-solid fa-repeat" id='repeat' onClick={cycleRepeat}></i>
+    }
 
     const pausefunc = () => {
         if(pause) {
@@ -28,12 +73,14 @@ export default function Controller(params) {
         defaultSocket.emit('skip', {
             guildId: guildId
         })
+        setPause(false)
     }
 
     return (
         <div className='controller'>
-            <button className={ pause ? 'pausebtn paused' : 'pausebtn pause'} onClick={pausefunc}></button>
-            <i className="fa-solid fa-forward-step"></i>
+            <button className={ pause ? 'pausebtn pause' : 'pausebtn paused' } onClick={pausefunc}></button>
+            <i className="fa-solid fa-forward-step" id="skip" onClick={skip}></i>
+            {repeatIcon()}
         </div>
     )
 }
