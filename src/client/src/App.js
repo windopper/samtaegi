@@ -1,22 +1,19 @@
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import io from 'socket.io-client'
-import './App.css';
 
-const socket = io('http://localhost:5000')
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes
+} from 'react-router-dom'
+import Main from './Main/Main'
 
 function App() {
-
-  const [size, setSize] = useState('0')
-
-  useEffect(() => {
-    socket.on('voicechannelInfo', (m) => {
-      setSize(m.size)
-    })
-  })
   return (
-    <div>{`ValidChannelSize: ${size}`}</div>
-  );
+    <Router>
+      <Routes>
+        <Route path={`/:guildId`} element={<Main/>}/>
+      </Routes>
+    </Router>
+  )
 }
 
 export default App;

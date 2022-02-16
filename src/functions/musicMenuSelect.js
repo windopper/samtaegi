@@ -1,6 +1,7 @@
 const music_player_commands = require('../commands/music_player_commands')
 const playdl = require('play-dl')
 const alert = require('../messages/music_message')
+const socketEmitter = require('./musicPlayer_socketEmitter')
 
 function menuSelect(interaction, io) {
 
@@ -47,6 +48,7 @@ async function addMusicToQueue(url, interaction, player) {
         content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다"),
         components: []
     })
+    socketEmitter.emitQueue(player.queue, player.guildId, player.io)
 }
 
 module.exports = {

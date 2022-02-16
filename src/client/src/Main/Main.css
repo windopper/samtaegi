@@ -1,0 +1,9 @@
+.container {
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgb(58, 36, 58);
+    overflow: hidden;
+}

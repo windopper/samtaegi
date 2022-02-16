@@ -1,0 +1,47 @@
+.queue-container {
+    background-color: rgb(58, 36, 58);
+    position: fixed;
+    bottom: 70px;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: calc((60% - 70px));
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.queue-container::-webkit-scrollbar {
+    width: 15px;
+    background-color: rgb(58, 36, 58);
+}
+.queue-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(0deg, #EA8D8D, #A890FE);
+    border-radius: 0.5em;
+}
+
+.thumbnails {
+    position: relative;
+    --h: 40px;
+    border-radius: 50%;
+    height: var(--h);
+    left: 5px;
+}
+
+.queue {
+    background-color: rgb(105, 74, 131);
+    position: relative;
+    margin: 10px;
+    left: 10px;
+    width: calc(100% - 30px);
+    height: 50px;
+    border-radius: 1em;
+    display: flex;
+    align-items: center;
+}
+
+.queue > span {
+    color: white;
+    position: relative;
+
+    left: 15px;
+}

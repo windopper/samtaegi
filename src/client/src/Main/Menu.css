@@ -1,0 +1,50 @@
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.container-menu {
+    position: fixed;
+    border-bottom-left-radius: 2em;
+    border-bottom-right-radius: 2em;
+    background: linear-gradient(45deg, #fca5f1, #b5ffff);
+    background-size: 400% 400%;
+	height: 50px;
+    right: 5%;
+	width: 125px;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle;
+    animation: gradient 5s ease infinite
+}
+
+.container-menu.hover {
+
+}
+
+#search-icon {
+    --color: white;
+    position: relative;
+    top: 8px;
+    font-size: 25px;
+    color: var(--color);
+    border-radius: 50%;
+    transition-duration: 0.5s;
+}
+
+  #search-icon:hover {
+    font-size: 30px;
+    color: black;
+    animation: gradient 5s ease infinite;
+    cursor: pointer;
+}
+
+

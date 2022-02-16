@@ -7,12 +7,14 @@ const play = require('play-dl')
 const file = require('./src/designs/musicQueue');
 const { deploy_commands } = require('./deploy-commands')
 const { menuSelect } = require('./src/functions/musicMenuSelect')
+const { PlayerSocketListener } = require('./src/functions/musicPlayer_socketListener')
 
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io")
+
 const io = new Server(server, {
     cors: {
         origin: 'http://localhost:3000',
@@ -28,30 +30,32 @@ app.get('/', (req, res) => {
     res.send('hi')
 })
 
-io.on('connection', (s) => {
+
+io.on('connection', (socket) => {
     console.log('new connection!')
     console.log(music_player_commands.Players.size)
-    io.emit('test', music_player_commands.Players.size)
+
+    PlayerSocketListener(socket, io)
 })
 
 server.listen(port, () => {
     console.log(`Socket IO server Listening on port ${port}`)
 })
 
-
-
 client.on('ready', () => {
     console.log('Ready!');
     client.user.setActivity("'/p' 로 음악 재생", {
         type: 'PLAYING'
     })
+
+
     // deploy_commands()
 });
 
 client.on('interactionCreate', async interaction => {
 
     if(interaction.isSelectMenu()) {
-        menuSelect(interaction)
+        menuSelect(interaction, io)
     }
     else if(!interaction.isCommand()) return;
 
@@ -68,20 +72,12 @@ client.on('interactionCreate', async interaction => {
     }
 })
 
-
-client.on('messageCreate', (message) => {
-
-    if(message.author.bot) return
-})
-
-
-
-
 // client.login(process.env.BOT_TOKEN)
 
 const config = require('./config.json');
 client.login(config.BOT_TOKEN)
 
-// const React = require('react')
-// const ReactDom = require('react-dom')
-// ReactDom.render(<h1>Hello React App</h1>, document.getElementById('root'));
+module.exports = {
+    io: io
+}
+

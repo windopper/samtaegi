@@ -3,16 +3,22 @@ const { VoiceChannel, MessageEmbed, MessageActionRow, MessageButton, MessageSele
 const ytdl = require('ytdl-core-discord')
 const alert = require('../messages/music_message')
 const playdl = require('play-dl')
+const socketEmitter = require('../functions/musicPlayer_socketEmitter')
 
 class MusicManager {
 
+    guildId
+    io
     voiceConnection
     audioPlayer
     queue
     queuerepeat = false
     songrepeat = false
+    pause = false
 
-    constructor(VoiceConnection) {
+    constructor(VoiceConnection, io, guildId) {
+        this.guildId = guildId
+        this.io = io
         this.voiceConnection = VoiceConnection
         this.audioPlayer = createAudioPlayer()
         this.voiceConnection.subscribe(this.audioPlayer)
@@ -48,6 +54,7 @@ class MusicManager {
 
     pause(interaction) {
         this.audioPlayer.pause()
+        this.pause = true
         interaction.reply({
             content: ':pause_button: 음악을 일시정지 하였습니다 `/unpause`를 통해 해제할 수 있습니다'
         })
@@ -55,6 +62,7 @@ class MusicManager {
     
     unpause(interaction) {
         this.audioPlayer.unpause()
+        this.pause = false
         interaction.reply({
             content: ':arrow_forward: 음악을 재생하였습니다'
         })
@@ -86,13 +94,15 @@ class MusicManager {
         if(url.startsWith('http') && await playdl.yt_validate(url) == 'video') {
             await playdl.video_basic_info(url).then((e)=> {
                 title = e.video_details.title
-                duration = e.video_details.durationInSec
+                duration = e.video_details.durationInSec,
+                thumbnails = e.video_details.thumbnails[0]
             });
 
             const queue = {
                 url: url,
                 title: title,
                 duration: duration,
+                thumbnails: thumbnails
             }
 
             this.queue.push(queue)
@@ -101,6 +111,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다")
             })
+            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
             return
         }
         else if(url.startsWith('http') && await playdl.yt_validate(url) == 'playlist') {
@@ -119,6 +130,7 @@ class MusicManager {
                     url: track.url,
                     title: track.title,
                     duration: track.durationInSec,
+                    thumbnails: track.thumbnails[0]
                 }
                 this.queue.push(queue)
                 if(this.queue.length==1) this.play(queue.url)
@@ -127,6 +139,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive("**[ "+trackName+" ]** 플레이리스트 **"+trackCount+"곡** 이(가) 성공적으로 큐에 등록되었습니다")
             })
+            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
             return
         }
         /**
@@ -193,12 +206,14 @@ class MusicManager {
             await playdl.soundcloud(url).then((e)=> {
                 title = e.user.name+' - '+e.name
                 duration = e.durationInSec
+                thumbnails = e.thumbnail
             })
 
             const queue = {
                 url: url,
                 title: title,
                 duration: duration,
+                thumbnails: thumbnails
             }
 
             this.queue.push(queue)
@@ -207,7 +222,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다")
             })
-
+            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
             return
 
         }
@@ -232,14 +247,17 @@ class MusicManager {
                     url: track.url,
                     title: track.user.name+' - '+track.name,
                     duration: track.durationInSec,
+                    thumbnails: track.thumbnail
                 }
                 this.queue.push(queue)
                 if(this.queue.length==1) this.play(queue.url)
             }
             
+            
             interaction.editReply({
                 content: alert.positive("**[ "+trackName+" ]** 플레이리스트 **"+trackCount+"곡** 이(가) 성공적으로 큐에 등록되었습니다")
             })
+            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
             return
         }
 
@@ -256,10 +274,10 @@ class MusicManager {
         if(this.queuerepeat) {
             this.queue.push(shift)
         }
-
         if(this.queue.length >= 1) {
             this.play(this.queue[0].url)
         }
+        socketEmitter.emitQueue(this.queue, this.guildId, this.io)
     }
 
     async play(url) {
@@ -378,6 +396,15 @@ class MusicManager {
             interaction.reply({
                 content: alert.positive('반복 범위를 "모든 음악"으로 설정하였습니다')
             })
+        }
+    }
+
+    getData() {
+        return {
+            queue: this.queue,
+            songrepeat: this.songrepeat,
+            queuerepeat: this.queuerepeat,
+            pause: this.pause
         }
     }
 }

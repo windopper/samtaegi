@@ -14,7 +14,7 @@ function listener(interaction, io) {
         let player = Players.get(guildId)
 
         if(commandName === 'connect') {
-            if(initializer(interaction)) {
+            if(initializer(interaction, io)) {
                 interaction.reply({
                     content: positive(`**${interaction.member.voice.channel.name} **에 연결되었습니다`)
                 })
@@ -54,7 +54,7 @@ function listener(interaction, io) {
     }
     else {
         if(commandName === 'connect') {
-            if(initializer(interaction)) {
+            if(initializer(interaction, io)) {
                 interaction.reply({
                     content: positive(`**${interaction.member.voice.channel.name} **에 연결되었습니다`)
                 })
@@ -69,14 +69,14 @@ function listener(interaction, io) {
         else if(commandName === 'skip') warningVoiceConnect(interaction)
         else if(commandName === 'repeat') warningVoiceConnect(interaction)
         else if(commandName === 'p') {
-            initializer(interaction)
+            initializer(interaction, io)
             if(Players.has(guildId)) {
                 let player = Players.get(guildId)
                 player.addQueue(interaction.options.getString('urlorsearch'), interaction)
             }
         }
         else if(commandName === '삼태기') {
-            initializer(interaction)
+            initializer(interaction, io)
             if(Players.has(guildId)) {
                 let player = Players.get(guildId)
                 player.addQueue('https://www.youtube.com/watch?v=zEYpydNwgDc', interaction)
@@ -88,12 +88,15 @@ function listener(interaction, io) {
 }
 
 function emitter(io, guildId) {
-    io.emit('voicechannelInfo', {
-        size: Players.size,
+
+    const guildRoom = io.of(`/${guildId}`)
+
+    guildRoom.emit('voicechannelInfo', {
+        size: Players.size
     })
 }
 
-function initializer(interaction) {
+function initializer(interaction, io) {
     if(interaction.member.voice.channel) {
         let guildId = interaction.guildId
         Players.set(guildId, new MusicManager(
@@ -102,6 +105,7 @@ function initializer(interaction) {
                 guildId: interaction.guildId,
                 adapterCreator: interaction.guild.voiceAdapterCreator,
             })
+            ,io ,guildId
         ))
         return true
     }
