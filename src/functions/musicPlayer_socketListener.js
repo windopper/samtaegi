@@ -2,6 +2,7 @@ const { SpeakingMap } = require('@discordjs/voice')
 const { Players } = require('../commands/music_player_commands')
 const { emitRepeat } = require('./musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('./musicPlayer_socketEmitter')
+const musicSearch = require("./musicSearch")
 
 function Listener(socket, io) {
 
@@ -35,6 +36,12 @@ function Listener(socket, io) {
     socket.on('repeat', s => {
         guildId = s.guildId
         repeat(guildId, s.repeat)
+    })
+
+    socket.on('SEARCH_YOUTUBE', s => {
+        guildId = s.guildId
+        musicSearch.YoutubeSearch(s, io)
+        console.log('received')
     })
 }
 

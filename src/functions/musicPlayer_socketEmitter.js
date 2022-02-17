@@ -13,11 +13,17 @@ function emitRepeat(songrepeat, queuerepeat, guildId, io) {
     })
 }
 
+function emitSearchData(data, personalId, guildId, io) {
+    const guildSpace = getGuildSpace(guildId, io)
+    guildSpace.emit(`FETCH_YOUTUBE:${personalId}`, data)
+}
+
 function getGuildSpace(guildId, io) {
     return io.of(`/${guildId}`)
 }
 
 module.exports = {
     emitQueue: emitQueue,
-    emitRepeat: emitRepeat
+    emitRepeat: emitRepeat,
+    emitSearchData: emitSearchData
 }

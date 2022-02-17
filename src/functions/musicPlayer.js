@@ -276,7 +276,7 @@ class MusicManager {
             this.queue.push(shift)
         }
         if(this.queue.length >= 1) {
-            this.play(this.queue[0].url)
+            if(this.queue[0] != undefined) this.play(this.queue[0].url)
         }
         socketEmitter.emitQueue(this.queue, this.guildId, this.io)
     }

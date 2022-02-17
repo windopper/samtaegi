@@ -40,6 +40,33 @@
     align-items: center;
 }
 
+@keyframes disappear {
+    from {
+        height: 50px;
+        color: white;
+    }
+    to {
+        height: 0px;
+        margin: 0px;
+        color: transparent;
+    }
+}
+
+.queue.disappear {
+    animation: disappear;
+    animation-duration: 0.5s;
+}
+
+.queue.disappear > span {
+    animation: disappear;
+    animation-duration: 0.5s;
+}
+
+.queue.disappear > img {
+    animation: disappear;
+    animation-duration: 0.5s;
+}
+
 .queue > span {
     color: white;
     position: relative;

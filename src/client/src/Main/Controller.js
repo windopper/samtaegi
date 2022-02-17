@@ -10,6 +10,7 @@ export default function Controller(params) {
 
     const [pause, setPause] = useState(false)
     const [repeat, setRepeat] = useState('none')
+    const [mouseenter, setMouseEnter] = useState(false)
 
     const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
 
@@ -28,29 +29,48 @@ export default function Controller(params) {
     }, [])
 
     const cycleRepeat = () => {
+        let data
         if(repeat === 'song') {
             setRepeat('queue')
+
+            data = {
+                guildId: guildId,
+                repeat: 'queue'
+            }
             console.log('queue')
         }
         else if(repeat === 'queue') {
             setRepeat('none')
+            data = {
+                guildId: guildId,
+                repeat: 'none'
+            }
             console.log('none')
         }
         else {
             setRepeat('song')
+            data = {
+                guildId: guildId,
+                repeat: 'song'
+            }
             console.log('song')
         }
 
-        defaultSocket.emit('repeat', {
-            guildId: guildId,
-            repeat: repeat
-        })
+        defaultSocket.emit('repeat', data)
     }
 
     const repeatIcon = () => {
         if(repeat === 'song') return <i className="fa-solid fa-repeat" onClick={cycleRepeat} id='repeat'></i>
         else if(repeat === 'queue') return <i className="fa-solid fa-repeat" id="repeat" onClick={cycleRepeat}></i>
         else return <i className="fa-solid fa-repeat" id='repeat' onClick={cycleRepeat}></i>
+    }
+
+    const enter = () => {
+        setMouseEnter(true)
+    }
+
+    const leave = () => {
+        setMouseEnter(false)
     }
 
     const pausefunc = () => {
@@ -80,7 +100,10 @@ export default function Controller(params) {
         <div className='controller'>
             <button className={ pause ? 'pausebtn pause' : 'pausebtn paused' } onClick={pausefunc}></button>
             <i className="fa-solid fa-forward-step" id="skip" onClick={skip}></i>
-            {repeatIcon()}
+            <i className="fa-solid fa-repeat" id='repeat' onClick={cycleRepeat} onMouseEnter={enter} onMouseLeave={leave}></i>
+            {
+                mouseenter ? (<div className='repeatinfo'><p>{repeat.toUpperCase()}</p></div>) : null
+            }
         </div>
     )
 }

@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path={`/:guildId`} element={<Main/>}/>
+        <Route path={`/:guildId/:personalId`} element={<Main/>}/>
       </Routes>
     </Router>
   )

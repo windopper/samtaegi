@@ -12,15 +12,20 @@ export default function Queue(params) {
     const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
 
     const [queue, setQueue] = useState([])
+    const [disappear, setDisappear] = useState(false)
 
     useEffect(() => {
         defaultSocket.emit('requestData', guildId)
         socket.on('fetchData', s => {
-            console.log('fetch')
             setQueue(s.queue)
         })
         socket.on('MUSIC_PLAYER_QUEUES', s => {
-            setQueue(s)
+            setTimeout(() => setDisappear(true), 300)
+            
+            setTimeout(() => {
+                setQueue(s)
+                setDisappear(false)
+            }, 800)
         })
     }, [])
     
@@ -28,7 +33,7 @@ export default function Queue(params) {
         const divs = []
         for(let q = 0; q<queue.length; q++) {
             divs.push(
-                <div className='queue' key={q}>
+                <div className={disappear && q === 0 ? 'queue disappear' : 'queue'} key={q}>
                     <img className='thumbnails' src={queue[q].thumbnails} alt='x'/>
                     <span>{queue[q].title}</span>
                 </div>
@@ -41,7 +46,7 @@ export default function Queue(params) {
 
     return (
         <div className='queue-container'> 
-            <Board queue={queue}/>
+            {/* <Board queue={queue}/> */}
         {
             queues()
         }

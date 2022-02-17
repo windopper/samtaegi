@@ -60,3 +60,48 @@
   color: #404040
 }
 
+
+@keyframes appear{
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.repeatinfo {
+  position: fixed;
+  right: 40px;
+  bottom: 75px;
+  width: 100px;
+  height: 50px;
+	background-color: white;
+  border-radius: 0.5em;
+  animation-name: appear;
+  animation-duration: 1s;
+  display: flex;
+  align-items: center;
+}
+
+.repeatinfo > p {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
+.repeatinfo::before {
+  content:'';
+  position: absolute;
+  height: 10px;
+  width: 30px;
+  border-radius: 1em;
+  background-color: white;
+  bottom: -15px;
+  right: 5px;
+  animation-name: appear;
+  animation-duration: .5s;
+}
+

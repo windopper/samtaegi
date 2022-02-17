@@ -16,8 +16,8 @@ function Main() {
     return (
         <div className='container'>
             <Queue guildId={param.guildId}/>
-            <Controller guildId={param.guildId}/>
-            <Menu />
+            <Controller guildId={param.guildId} />
+            <Menu guildId={param.guildId} personalId={param.personalId}/>
         </div>
     );
 }
