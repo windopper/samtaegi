@@ -3,6 +3,7 @@ const { Players } = require('../commands/music_player_commands')
 const { emitRepeat } = require('./musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('./musicPlayer_socketEmitter')
 const musicSearch = require("./musicSearch")
+const addQueue = require('./addQueue')
 
 function Listener(socket, io) {
 
@@ -19,7 +20,6 @@ function Listener(socket, io) {
 
     socket.on('pause', s => {
         guildId = s.guildId
-        console.log('pause!')
         pause(guildId)
     })
 
@@ -41,7 +41,14 @@ function Listener(socket, io) {
     socket.on('SEARCH_YOUTUBE', s => {
         guildId = s.guildId
         musicSearch.YoutubeSearch(s, io)
-        console.log('received')
+    })
+
+    socket.on('DEPLOY_QUEUE', s => {
+        guildId = s.guildId
+        let url = s.url
+        if(isValid(guildId)) {
+            addQueue.addQueue(url, Players.get(guildId), io, guildId)
+        }
     })
 }
 

@@ -1,5 +1,5 @@
 .queue-container {
-    background-color: rgb(58, 36, 58);
+    background-color: rgb(36, 14, 36);
     position: fixed;
     bottom: 70px;
     margin: 0;
@@ -22,14 +22,15 @@
 .thumbnails {
     position: relative;
     --h: 40px;
-    border-radius: 50%;
+    border-radius: 1em;
     margin: 5px;
     height: var(--h);
     left: 5px;
 }
 
 .queue {
-    background-color: rgb(105, 74, 131);
+    /* background: linear-gradient(90deg, rgb(105, 74, 131), rgb(175, 175, 175)); */
+    background-color: rgb(133, 96, 163);
     position: relative;
     margin: 10px;
     left: 10px;
@@ -70,6 +71,7 @@
 .queue > span {
     color: white;
     position: relative;
+    font-weight: 500;
     margin: 10px;
     left: 15px;
 }

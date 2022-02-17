@@ -1,8 +1,13 @@
 const { Players } = require('../commands/music_player_commands')
 
-function emitQueue(queue, guildId, io) {
+function emitUpdateQueue(queue, guildId, io) {
     const guildSpace = getGuildSpace(guildId, io)
-    guildSpace.emit('MUSIC_PLAYER_QUEUES', queue)
+    guildSpace.emit('MUSIC_UPDATE_QUEUES', queue)
+}
+
+function emitProcessQueue(queue, guildId, io) {
+    const guildSpace = getGuildSpace(guildId, io)
+    guildSpace.emit('MUSIC_PROCESS_QUEUES', queue)
 }
 
 function emitRepeat(songrepeat, queuerepeat, guildId, io) {
@@ -23,7 +28,8 @@ function getGuildSpace(guildId, io) {
 }
 
 module.exports = {
-    emitQueue: emitQueue,
+    emitUpdateQueue: emitUpdateQueue,
+    emitProcessQueue: emitProcessQueue,
     emitRepeat: emitRepeat,
     emitSearchData: emitSearchData
 }

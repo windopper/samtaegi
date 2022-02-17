@@ -96,7 +96,7 @@ class MusicManager {
             await playdl.video_basic_info(url).then((e)=> {
                 title = e.video_details.title
                 duration = e.video_details.durationInSec,
-                thumbnails = e.video_details.thumbnails[0]
+                thumbnails = thumbnails = e.video_details.thumbnails[0].url
             });
 
             const queue = {
@@ -112,7 +112,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다")
             })
-            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
+            socketEmitter.emitUpdateQueue(this.queue, this.guildId, this.io)
             return
         }
         else if(url.startsWith('http') && await playdl.yt_validate(url) == 'playlist') {
@@ -131,7 +131,7 @@ class MusicManager {
                     url: track.url,
                     title: track.title,
                     duration: track.durationInSec,
-                    thumbnails: track.thumbnails[0]
+                    thumbnails: track.thumbnails[0].url
                 }
                 this.queue.push(queue)
                 if(this.queue.length==1) this.play(queue.url)
@@ -140,7 +140,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive("**[ "+trackName+" ]** 플레이리스트 **"+trackCount+"곡** 이(가) 성공적으로 큐에 등록되었습니다")
             })
-            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
+            socketEmitter.emitUpdateQueue(this.queue, this.guildId, this.io)
             return
         }
         /**
@@ -223,7 +223,7 @@ class MusicManager {
             interaction.editReply({
                 content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다")
             })
-            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
+            socketEmitter.emitUpdateQueue(this.queue, this.guildId, this.io)
             return
 
         }
@@ -254,11 +254,10 @@ class MusicManager {
                 if(this.queue.length==1) this.play(queue.url)
             }
             
-            
             interaction.editReply({
                 content: alert.positive("**[ "+trackName+" ]** 플레이리스트 **"+trackCount+"곡** 이(가) 성공적으로 큐에 등록되었습니다")
             })
-            socketEmitter.emitQueue(this.queue, this.guildId, this.io)
+            socketEmitter.emitUpdateQueue(this.queue, this.guildId, this.io)
             return
         }
 
@@ -278,7 +277,7 @@ class MusicManager {
         if(this.queue.length >= 1) {
             if(this.queue[0] != undefined) this.play(this.queue[0].url)
         }
-        socketEmitter.emitQueue(this.queue, this.guildId, this.io)
+        socketEmitter.emitProcessQueue(this.queue, this.guildId, this.io)
     }
 
     async play(url) {

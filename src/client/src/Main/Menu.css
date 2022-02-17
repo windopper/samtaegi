@@ -186,6 +186,7 @@
   }
 
   .search-container > div {
+    z-index: 5;
     position: relative;
     margin: 5px;
     width: calc(100% - 30px);
@@ -202,7 +203,7 @@
   }
 
   .search-container > div:last-child {
-      padding-bottom: 30px;
+      margin-bottom: 30px;
   }
 
   .search-container > div > img {

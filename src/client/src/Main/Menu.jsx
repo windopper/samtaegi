@@ -10,14 +10,13 @@ export default function Menu(param) {
     const personalId = param.personalId;
     const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
 
-    const [click, setClick] = useState(false)
     const [engine, setEngine] = useState('yt')
     const [searching, setSearching] = useState(false)
-    const [update, setUpdate] = useState(false)
     const text = useRef(' ')
     const [searchData, setSearchData] = useState([])
     const searchBoard = useRef(null)
     const timeref = useRef(0)
+    const closetimeref = useRef(0)
 
     useEffect(() => {
         socket.on(`FETCH_YOUTUBE:${personalId}`, s => {
@@ -37,9 +36,10 @@ export default function Menu(param) {
         if(searching) {
             searchBoard.current = 'searchboard disappear'
             setSearching(false)
-            setTimeout(() => {
+            clearTimeout(closetimeref.current)
+            closetimeref.current = setTimeout(() => {
                 searchBoard.current = null
-                setUpdate(!update)
+                setSearching(false)
             }, 500)
         }
 
@@ -55,10 +55,9 @@ export default function Menu(param) {
                 defaultSocket.emit('SEARCH_YOUTUBE', {
                     personalId: personalId,
                     guildId: guildId,
-                    value: text.current
+                    value: _text
                 })
             }, 500)
-            
         }
         else {
             closeSearching()
@@ -74,6 +73,19 @@ export default function Menu(param) {
         })
     }
 
+
+
+    function handleSendQueue(url) {
+        console.log(url)
+        defaultSocket.emit('DEPLOY_QUEUE', {
+            guildId: guildId,
+            personalId: personalId,
+            url: url
+        }) 
+    }
+        
+
+
     const getSearchDatas = () => {
         const divs = []
         console.log(searchData.length)
@@ -82,7 +94,7 @@ export default function Menu(param) {
             let title = data.title
             if(title.length > 40) title = title.substr(0, 39) + '...'
             divs.push(
-              <div key={num}>
+              <div key={num} onClick={() => handleSendQueue(data.url)}>
                 <img src={data.thumbnail.url} alt="x" />
                 <div>
                   <span>{title}</span>

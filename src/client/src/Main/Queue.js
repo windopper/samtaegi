@@ -19,13 +19,16 @@ export default function Queue(params) {
         socket.on('fetchData', s => {
             setQueue(s.queue)
         })
-        socket.on('MUSIC_PLAYER_QUEUES', s => {
+        socket.on('MUSIC_PROCESS_QUEUES', s => {
             setTimeout(() => setDisappear(true), 300)
             
             setTimeout(() => {
                 setQueue(s)
                 setDisappear(false)
             }, 800)
+        })
+        socket.on('MUSIC_UPDATE_QUEUES', s => {
+            setQueue(s)
         })
     }, [])
     
