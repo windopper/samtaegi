@@ -2,7 +2,7 @@ const playdl = require('play-dl')
 const socketEmitter = require('../functions/musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('../functions/musicPlayer_socketEmitter')
 
-async function addQueue(url, Player, io, guildId) {
+async function addQueue(url, Player, io, guildId, personalId) {
     
     let title
     let duration
@@ -29,6 +29,7 @@ async function addQueue(url, Player, io, guildId) {
         if(Player.queue.length==1) Player.play(queue.url)
 
         socketEmitter.emitUpdateQueue(Player.queue, guildId, io)
+        socketEmitter.emitDeployComplete(personalId, guildId, io)
         return
     }
     else if(url.startsWith('http') && await playdl.yt_validate(url) == 'playlist') {
@@ -55,6 +56,7 @@ async function addQueue(url, Player, io, guildId) {
         }
     
         socketEmitter.emitUpdateQueue(Player.queue, guildId, io)
+        socketEmitter.emitDeployComplete(personalId, guildId, io)
         return
     }
     /**
@@ -95,6 +97,7 @@ async function addQueue(url, Player, io, guildId) {
         if(Player.queue.length==1) Player.play(queue.url)
 
         socketEmitter.emitUpdateQueue(Player.queue, guildId, io)
+        socketEmitter.emitDeployComplete(personalId, guildId, io)
         return
 
     }
@@ -126,6 +129,7 @@ async function addQueue(url, Player, io, guildId) {
         }
 
         socketEmitter.emitUpdateQueue(Player.queue, guildId, io)
+        socketEmitter.emitDeployComplete(personalId, guildId, io)
         return
     }
 

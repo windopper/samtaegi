@@ -1,10 +1,11 @@
-const { createAudioPlayer, createAudioResource, AudioPlayerStatus, StreamType, joinVoiceChannel } = require('@discordjs/voice')
+const { createAudioPlayer, createAudioResource, AudioPlayerStatus, StreamType, joinVoiceChannel, VoiceConnectionStatus } = require('@discordjs/voice')
 const { VoiceChannel, MessageEmbed, MessageActionRow, MessageButton, MessageSelectMenu } = require('discord.js')
 const ytdl = require('ytdl-core-discord')
 const alert = require('../messages/music_message')
 const playdl = require('play-dl')
 const socketEmitter = require('../functions/musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('../functions/musicPlayer_socketEmitter')
+const { emitPlayBackDuration } = require('../functions/musicPlayer_socketEmitter')
 
 class MusicManager {
 
@@ -13,6 +14,7 @@ class MusicManager {
     voiceConnection
     audioPlayer
     queue
+    intervalId = 0
     queuerepeat = false
     songrepeat = false
     pause = false
@@ -24,6 +26,16 @@ class MusicManager {
         this.audioPlayer = createAudioPlayer()
         this.voiceConnection.subscribe(this.audioPlayer)
         this.queue = new Array()
+
+        this.voiceConnection.on(VoiceConnectionStatus.Destroyed, () => {
+            this.voiceConnection.disconnect()
+            clearInterval(this.intervalId)
+        })
+
+        this.voiceConnection.on(VoiceConnectionStatus.Disconnected, () => {
+            this.voiceConnection.destroy()
+            clearInterval(this.intervalId)
+        })
 
         this.audioPlayer.on(
             'stateChange',
@@ -41,6 +53,7 @@ class MusicManager {
     disconnect(interaction) {
         this.voiceConnection.disconnect()
         this.voiceConnection.destroy()
+        clearInterval(this.intervalId)
         interaction.reply({
             content: ':x: 음성 연결이 해제되었습니다'
         })
@@ -267,6 +280,7 @@ class MusicManager {
     }
 
     processQueue() {
+        clearInterval(this.intervalId)
         let shift
         if(!this.songrepeat) {
            shift = this.queue.shift()
@@ -283,6 +297,9 @@ class MusicManager {
     async play(url) {
         const pd = await playdl.stream(url, { quality: 2, discordPlayerCompatibility: true})
         const resource = createAudioResource(pd.stream, { inputType: pd.type })
+        this.intervalId = setInterval(() => {
+            emitPlayBackDuration(resource.playbackDuration, this.guildId, this.io)
+        }, 500)
         this.audioPlayer.play(resource)
     }
 
@@ -405,7 +422,7 @@ class MusicManager {
             queue: this.queue,
             songrepeat: this.songrepeat,
             queuerepeat: this.queuerepeat,
-            pause: this.pause
+            pause: this.pause,
         }
     }
 }

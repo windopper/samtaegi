@@ -7,6 +7,7 @@ import Queue from './Queue'
 import Controller from './Controller'
 import Menu from './Menu'
 import Board from './Board'
+import StatusBoard from './StatusBoard'
 
 
 function Main() {
@@ -15,9 +16,12 @@ function Main() {
 
     return (
         <div className='container'>
+            
             <Queue guildId={param.guildId}/>
             <Controller guildId={param.guildId} />
             <Menu guildId={param.guildId} personalId={param.personalId}/>
+            <StatusBoard />
+            
         </div>
     );
 }

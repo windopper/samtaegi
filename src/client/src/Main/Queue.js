@@ -3,19 +3,16 @@ import { useEffect, useState } from "react"
 import { io } from 'socket.io-client'
 import './Queue.css'
 import Board from './Board'
-
-const defaultSocket = io('http://localhost:5000')
+import { defaultSocket, guildSocket } from '../socket'
 
 export default function Queue(params) {
 
     const guildId = params.guildId
-    const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
-
     const [queue, setQueue] = useState([])
     const [disappear, setDisappear] = useState(false)
 
     useEffect(() => {
-        defaultSocket.emit('requestData', guildId)
+        let socket = guildSocket(guildId)
         socket.on('fetchData', s => {
             setQueue(s.queue)
         })
@@ -30,6 +27,7 @@ export default function Queue(params) {
         socket.on('MUSIC_UPDATE_QUEUES', s => {
             setQueue(s)
         })
+        defaultSocket.emit('requestData', guildId)
     }, [])
     
     const queues = () => {
@@ -49,10 +47,9 @@ export default function Queue(params) {
 
     return (
         <div className='queue-container'> 
-            {/* <Board queue={queue}/> */}
         {
             queues()
         }
-      </div>
+        </div>
     )
 }

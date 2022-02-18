@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef } from 'react'
 import './Menu.css'
 import { io, Socket } from 'socket.io-client'
-
-const defaultSocket = io('http://localhost:5000')
+import { defaultSocket, guildSocket } from '../socket'
 
 export default function Menu(param) {
 
     const guildId = param.guildId;
     const personalId = param.personalId;
-    const socket = io(`http://localhost:5000/${guildId}`, { forceNew: true })
 
     const [engine, setEngine] = useState('yt')
+    const [loading, setLoading] = useState(false)
+    const [deploycomplete, setDeployComplete] = useState(false)
     const [searching, setSearching] = useState(false)
     const text = useRef(' ')
     const [searchData, setSearchData] = useState([])
@@ -19,8 +19,19 @@ export default function Menu(param) {
     const closetimeref = useRef(0)
 
     useEffect(() => {
+        let socket = guildSocket(guildId)
+
         socket.on(`FETCH_YOUTUBE:${personalId}`, s => {
+            setLoading(false)
             setSearchData(s)
+        })
+        socket.on(`DEPLOY_COMPLETE:${personalId}`, s => {
+            console.log('deploy complete!')
+            setDeployComplete(true)
+            setTimeout(() => {
+                setDeployComplete(false)
+                setLoading(false)
+            }, 2000)
         })
     }, [])
 
@@ -49,6 +60,7 @@ export default function Menu(param) {
         let _text = e.target.value
         text.current = _text
         if(_text.length >= 2) {
+            setLoading(true)
             openSearching()
             clearTimeout(timeref.current)
             timeref.current = setTimeout(() => {
@@ -73,10 +85,8 @@ export default function Menu(param) {
         })
     }
 
-
-
     function handleSendQueue(url) {
-        console.log(url)
+        setLoading(true)
         defaultSocket.emit('DEPLOY_QUEUE', {
             guildId: guildId,
             personalId: personalId,
@@ -84,8 +94,6 @@ export default function Menu(param) {
         }) 
     }
         
-
-
     const getSearchDatas = () => {
         const divs = []
         console.log(searchData.length)
@@ -111,7 +119,47 @@ export default function Menu(param) {
 
     const searchBoardContent = () => {
         return (
-            <div className={searchBoard.current}>
+          <div className={searchBoard.current}>
+            {loading && searching ? (
+              <div className={!deploycomplete ? `loading` : `loading anim`}>
+
+                {deploycomplete ? (
+                  <div className={`wrapper`}>
+                    {" "}
+                    <svg
+                      className="checkmark"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 52 52"
+                    >
+                      <circle
+                        className="checkmark__circle"
+                        cx="26"
+                        cy="26"
+                        r="25"
+                        fill="none"
+                      />
+                      <path
+                        className="checkmark__check"
+                        fill="none"
+                        d="M14.1 27.2l7.1 7.2 16.7-16.8"
+                      />
+                    </svg>
+                  </div>
+                ) : null}
+
+              </div>
+            ) : null}
+            {searching ? (
+                <div>
+                    <i className="fa-brands fa-youtube" id='youtube' style={{
+                        color: `${engine == 'yt' ? 'red' : 'black'}`
+                    }} onClick={() => setEngine('yt')}></i>
+                    <i className="fa-brands fa-soundcloud" id='soundcloud' style={{
+
+                    }} onClick={() => setEngine('soundcloud')}></i>
+                    <div className='search-text'>{`'${text.current}'  검색결과`}</div>
+                </div>
+            ) : null}
             {searching ? (
               <div className="close" onClick={closeSearching}></div>
             ) : null}
@@ -119,7 +167,7 @@ export default function Menu(param) {
               <div className="search-container">{getSearchDatas()}</div>
             ) : null}
           </div>
-        )
+        );
     }
 
     return (
@@ -133,10 +181,9 @@ export default function Menu(param) {
           placeholder="Search.."
           onChange={onChange}
         />
-
-        {searchBoardContent()}
-
-
+        {
+            searchBoardContent()
+        }
       </div>
     );
 }

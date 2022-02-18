@@ -1,10 +1,11 @@
 .controller {
+    z-index: 2;
     position: fixed;
     bottom: 0px;
     left: 0px;
     height: 70px;
     width: 100%;
-    background: linear-gradient(45deg, rgb(113, 0, 128, 0.7), rgb(98, 157, 235, 0.7));
+    background: linear-gradient(45deg, rgb(113, 0, 128, 1), rgb(98, 157, 235, 1));
     display: flex;
     align-items: center;
 }
@@ -103,5 +104,29 @@
   right: 5px;
   animation-name: appear;
   animation-duration: .5s;
+}
+
+.audio-slide {
+  position: relative;
+  width: calc(100% - 250px);
+  border: 1px solid black;
+  background-color: rgb(255, 255, 255);
+  border-radius: 1em;
+  height: 5px;
+  left: 90px;
+  padding: 0px;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+
+.audio-bar {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  width: 15px;
+  height: 15px;
+  background-color: rgb(99, 99, 240);
+  border-radius: 50%;
 }
 

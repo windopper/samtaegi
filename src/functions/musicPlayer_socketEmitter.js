@@ -5,6 +5,16 @@ function emitUpdateQueue(queue, guildId, io) {
     guildSpace.emit('MUSIC_UPDATE_QUEUES', queue)
 }
 
+function emitPlayBackDuration(value, guildId, io) {
+    const guildSpace = getGuildSpace(guildId, io)
+    guildSpace.emit('MUSIC_PLAYBACKDURATION', value)
+}
+
+function emitDeployComplete(personalId, guildId, io) {
+    const guildSpace = getGuildSpace(guildId, io)
+    guildSpace.emit(`DEPLOY_COMPLETE:${personalId}`, '')
+}
+
 function emitProcessQueue(queue, guildId, io) {
     const guildSpace = getGuildSpace(guildId, io)
     guildSpace.emit('MUSIC_PROCESS_QUEUES', queue)
@@ -31,5 +41,7 @@ module.exports = {
     emitUpdateQueue: emitUpdateQueue,
     emitProcessQueue: emitProcessQueue,
     emitRepeat: emitRepeat,
-    emitSearchData: emitSearchData
+    emitSearchData: emitSearchData,
+    emitDeployComplete: emitDeployComplete,
+    emitPlayBackDuration: emitPlayBackDuration
 }

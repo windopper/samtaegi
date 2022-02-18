@@ -45,9 +45,10 @@ function Listener(socket, io) {
 
     socket.on('DEPLOY_QUEUE', s => {
         guildId = s.guildId
+        let personalId = s.personalId
         let url = s.url
         if(isValid(guildId)) {
-            addQueue.addQueue(url, Players.get(guildId), io, guildId)
+            addQueue.addQueue(url, Players.get(guildId), io, guildId, personalId)
         }
     })
 }

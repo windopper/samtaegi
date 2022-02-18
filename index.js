@@ -38,6 +38,7 @@ io.on('connection', (socket) => {
     PlayerSocketListener(socket, io)
 })
 
+
 server.listen(port, () => {
     console.log(`Socket IO server Listening on port ${port}`)
 })
@@ -47,6 +48,8 @@ client.on('ready', () => {
     client.user.setActivity("'/p' 로 음악 재생", {
         type: 'PLAYING'
     })
+
+    setInterval(() => server.getConnections((er, n) => console.log(n)), 2000)
 
 
     // deploy_commands()
