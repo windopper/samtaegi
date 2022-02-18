@@ -108,7 +108,7 @@
 
 .audio-slide {
   position: relative;
-  width: calc(100% - 250px);
+  width: calc(100% - 350px);
   border: 1px solid black;
   background-color: rgb(255, 255, 255);
   border-radius: 1em;
@@ -128,5 +128,13 @@
   height: 15px;
   background-color: rgb(99, 99, 240);
   border-radius: 50%;
+}
+
+.audio-progress-num {
+  position: inherit;
+  color: white;
+  vertical-align: text-top;
+  right: 90px;
+  cursor: default;
 }
 

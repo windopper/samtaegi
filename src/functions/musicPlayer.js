@@ -6,6 +6,7 @@ const playdl = require('play-dl')
 const socketEmitter = require('../functions/musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('../functions/musicPlayer_socketEmitter')
 const { emitPlayBackDuration } = require('../functions/musicPlayer_socketEmitter')
+const music_player_commands = require('../commands/music_player_commands')
 
 class MusicManager {
 
@@ -24,11 +25,12 @@ class MusicManager {
         this.io = io
         this.voiceConnection = VoiceConnection
         this.audioPlayer = createAudioPlayer()
+
         this.voiceConnection.subscribe(this.audioPlayer)
         this.queue = new Array()
 
         this.voiceConnection.on(VoiceConnectionStatus.Destroyed, () => {
-            this.voiceConnection.disconnect()
+            music_player_commands.Players.delete(guildId)
             clearInterval(this.intervalId)
         })
 
@@ -52,7 +54,6 @@ class MusicManager {
     }
     disconnect(interaction) {
         this.voiceConnection.disconnect()
-        this.voiceConnection.destroy()
         clearInterval(this.intervalId)
         interaction.reply({
             content: ':x: 음성 연결이 해제되었습니다'

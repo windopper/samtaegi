@@ -28,7 +28,7 @@ export default function Controller(params) {
             else setRepeat('none')
         })
         socket.on(`MUSIC_PLAYBACKDURATION`, s => {
-            console.log('get dura')
+            defaultSocket.emit('requestData', guildId)
             setDura(s)
         })
     }, [])
@@ -42,7 +42,6 @@ export default function Controller(params) {
                 guildId: guildId,
                 repeat: 'queue'
             }
-            console.log('queue')
         }
         else if(repeat === 'queue') {
             setRepeat('none')
@@ -50,7 +49,6 @@ export default function Controller(params) {
                 guildId: guildId,
                 repeat: 'none'
             }
-            console.log('none')
         }
         else {
             setRepeat('song')
@@ -58,7 +56,6 @@ export default function Controller(params) {
                 guildId: guildId,
                 repeat: 'song'
             }
-            console.log('song')
         }
 
         defaultSocket.emit('repeat', data)
@@ -95,6 +92,28 @@ export default function Controller(params) {
         setPause(false)
     }
 
+    function secToHMS(sec) {
+        let h
+        let m
+        let s
+        h = String(Math.floor(sec / 3600))
+        if(h.length == 1) h = '0'+h
+        sec = sec % 3600
+        m = String(Math.floor(sec / 60))
+        if(m.length == 1) m = '0'+m
+        sec = sec % 60
+        s = String(sec)
+        if(s.length == 1) s = '0'+s
+        if(h==0) {
+            return (
+                m+':'+s
+            )
+        }
+        return (
+            h+':'+m+':'+s
+        )
+    }
+
     return (
         <div className='controller'>
             <button className={ pause ? 'pausebtn pause' : 'pausebtn paused' } onClick={pausefunc}></button>
@@ -105,6 +124,7 @@ export default function Controller(params) {
                     left: `${dura/1000 < songdura.current ? dura/1000 / songdura.current * 100 : 0}%`,
                 }}></div>
             </div>
+            <div className='audio-progress-num'>{`${secToHMS(parseInt(dura/1000))} / ${secToHMS(songdura.current)}`}</div>
             {
                 mouseenter ? (<div className='repeatinfo'><p>{repeat.toUpperCase()}</p></div>) : null
             }

@@ -28,6 +28,10 @@ function emitRepeat(songrepeat, queuerepeat, guildId, io) {
     })
 }
 
+function emitGuildIcon(iconUrls, guildId, io) {
+    io.emit('GET_GUILD_ICON', iconUrls)
+}
+
 function emitSearchData(data, personalId, guildId, io) {
     const guildSpace = getGuildSpace(guildId, io)
     guildSpace.emit(`FETCH_YOUTUBE:${personalId}`, data)
@@ -37,11 +41,14 @@ function getGuildSpace(guildId, io) {
     return io.of(`/${guildId}`)
 }
 
+
+
 module.exports = {
     emitUpdateQueue: emitUpdateQueue,
     emitProcessQueue: emitProcessQueue,
     emitRepeat: emitRepeat,
     emitSearchData: emitSearchData,
     emitDeployComplete: emitDeployComplete,
-    emitPlayBackDuration: emitPlayBackDuration
+    emitPlayBackDuration: emitPlayBackDuration,
+    emitGuildIcon: emitGuildIcon
 }

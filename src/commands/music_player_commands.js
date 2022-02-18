@@ -1,4 +1,4 @@
-const { joinVoiceChannel } = require('@discordjs/voice')
+const { joinVoiceChannel, VoiceConnection, VoiceConnectionStatus } = require('@discordjs/voice')
 const { IntegrationApplication } = require('discord.js')
 const { MusicManager } = require('../functions/musicPlayer')
 const { positive } = require('../messages/music_message')

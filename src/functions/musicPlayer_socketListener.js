@@ -1,11 +1,11 @@
 const { SpeakingMap } = require('@discordjs/voice')
 const { Players } = require('../commands/music_player_commands')
-const { emitRepeat } = require('./musicPlayer_socketEmitter')
+const { emitRepeat, emitGuildIcon } = require('./musicPlayer_socketEmitter')
 const musicPlayer_socketEmitter = require('./musicPlayer_socketEmitter')
 const musicSearch = require("./musicSearch")
 const addQueue = require('./addQueue')
 
-function Listener(socket, io) {
+function Listener(socket, io, client) {
 
     let guildId
 
@@ -36,6 +36,12 @@ function Listener(socket, io) {
     socket.on('repeat', s => {
         guildId = s.guildId
         repeat(guildId, s.repeat)
+    })
+
+    socket.on('REQUEST_GUILD_ICON', s => {
+        guildId = s.guildId;
+        const iconUrls = guildId.map((v, i) => client.guilds.cache.get(v).iconURL())
+        emitGuildIcon(iconUrls, guildId, io)
     })
 
     socket.on('SEARCH_YOUTUBE', s => {
