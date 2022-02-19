@@ -39,8 +39,11 @@ function Listener(socket, io, client) {
     })
 
     socket.on('REQUEST_GUILD_ICON', s => {
-        guildId = s.guildId;
-        const iconUrls = guildId.map((v, i) => client.guilds.cache.get(v).iconURL())
+        let guildIds = Players.keys()
+        const iconUrls = []
+        for(let guildId of guildIds) {
+            iconUrls.push(client.guilds.cache.get(guildId).iconURL())
+        }
         emitGuildIcon(iconUrls, guildId, io)
     })
 

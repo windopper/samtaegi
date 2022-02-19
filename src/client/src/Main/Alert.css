@@ -1,0 +1,31 @@
+.alert-container {
+    position: fixed;
+
+    top: 10px;
+    left: 10px;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes alertAppear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.8;
+    }
+}
+
+.alert {
+    height: 50px;
+    width: 150px;
+    background-color: rgb(228, 228, 228);
+    opacity: 0.8;
+    border-radius: 0.5em;
+    top: 5px;
+    margin-bottom: 5px;
+    animation-name: alertAppear;
+    animation-duration: 0.5s;
+}

@@ -12,14 +12,19 @@ export default function Queue(params) {
     const [disappear, setDisappear] = useState(false)
 
     useEffect(() => {
+        let time_1 = 0
+        let time_2 = 0
+        const cleanUp = () => {
+            clearTimeout(time_1)
+            clearTimeout(time_2)
+        }
         let socket = guildSocket(guildId)
         socket.on('fetchData', s => {
             setQueue(s.queue)
         })
         socket.on('MUSIC_PROCESS_QUEUES', s => {
-            setTimeout(() => setDisappear(true), 300)
-            
-            setTimeout(() => {
+            time_1 = setTimeout(() => setDisappear(true), 300)
+            time_2 = setTimeout(() => {
                 setQueue(s)
                 setDisappear(false)
             }, 800)
@@ -28,6 +33,9 @@ export default function Queue(params) {
             setQueue(s)
         })
         defaultSocket.emit('requestData', guildId)
+        return (
+            cleanUp()
+        )
     }, [])
     
     const queues = () => {
@@ -47,6 +55,7 @@ export default function Queue(params) {
 
     return (
         <div className='queue-container'> 
+            <div className='queue-info'></div>
         {
             queues()
         }

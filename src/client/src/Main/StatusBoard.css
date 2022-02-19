@@ -3,4 +3,34 @@
     height: 100vh;
     width: 90px;
     background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.guilds {
+    margin: 7px;
+    width: 60px;
+    border-radius: 50%;
+}
+
+.guilds:hover {
+
+}
+
+.guilds:nth-child(1) {
+    margin-top: 15px;
+}
+
+.guilds > img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    transition: ease;
+    transition-duration: 0.3s;
+    box-shadow: 0 0 0 10px rgb(231, 255, 231) inset;
+}
+
+.guilds > img:hover {
+    border-radius: 35%;
 }
