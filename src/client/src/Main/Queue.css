@@ -64,6 +64,7 @@
     height: 47px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid white;
     cursor: pointer;
     transition: ease;
@@ -83,11 +84,10 @@
     position: relative;
     font-weight: 500;
     margin: 0 20px 0 20px;
-    
 }
 
 .queue > span:last-child {
-    position: absolute;
+    position: inherit;
     font-weight: 200;
     width: fit-content;
     height: fit-content;

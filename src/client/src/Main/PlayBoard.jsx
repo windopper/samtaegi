@@ -3,25 +3,22 @@ import { fetchData } from '../Util/fetchData'
 import './PlayBoard.css'
 import { getColors } from '../Util/ColorThief'
 import { guildSocket } from '../socket'
-
-const ColorThief = require('colorthief')
+import { Palette } from 'color-thief-react'
 
 export default function PlayBoard(params) {
 
     const guildId = params.guildId
-    const [update, setUpdate] = useState(false)
-    const colorref = useRef([[0, 0, 0], [0, 0, 0], [0, 0, 0]])
+    const color = ['rgb(0, 0, 0)', 'rgb(100, 100, 100)', 'rgb(200, 200, 200)']
+    const [info, setInfo] = useState([])
 
     useEffect(() => {
 
         let socket = guildSocket(guildId)
 
         socket.on('MUSIC_PROCESS_QUEUES', s => {
-            console.log('hi')
             fetch()
-            setUpdate(!update)
         })
-
+ 
         fetch()
 
     }, [])
@@ -29,30 +26,17 @@ export default function PlayBoard(params) {
     const fetch = () => {
         fetchData(guildId).then((response) => {
             if(response.queue.length >= 1) {
-                const img = new Image()
-
-                let googleProxyURL = 'https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=';
-                img.crossOrigin = 'Anonymous';
-                let imageURL = response.queue[0].thumbnails
-                img.src = imageURL
-
-                let root = document.getElementById('root')
-                let container = root.getElementsByClassName('container')
-                let queuecontainer = container[0].getElementsByClassName('queue-container')
-
-
-                colorref.current = getColors(imageURL)
+                setInfo(response.queue)
             }
-            console.log('update')
-            setUpdate(!update)
         })
     }
 
-    const lis = () => {
+    const lis = (data) => {
         let lises = []
         for(let i=0; i<10; i++) {
             lises.push(<li key={i} style={{
-                background: `rgb(${colorref.current[2][0]}, ${colorref.current[2][1]}, ${colorref.current[2][2]}, 0.2)`
+                background: `${data[2]}`,
+                opacity: '0.2',
             }}></li>)
         }
         return (
@@ -60,18 +44,44 @@ export default function PlayBoard(params) {
         )
     }
 
+    const getComponent = (data) => {
+        return (
+          <div
+            className="area"
+            style={{
+              background: `linear-gradient(90deg,
+               ${data[0]},
+               ${data[1]})`,
+            }}
+          >
+            <ul className="circles">{lis(data)}</ul>
+            <div className="now-playing">현재 재생 중</div>
+            <div className="music-name">{info[0].title}</div>
+          </div>
+        );
+    }
+
+    const getPlayBoard = () => {
+        if(info.length > 0) {
+            return (
+                <Palette src={info[0].thumbnails} colorCount={3} crossOrigin='anonymous' format='rgbString'>
+                  {({ data, loading }) => {
+                      if(data == undefined) {
+                          return getComponent(color)
+                      } else {
+                          return getComponent(data)
+                      }
+                  }}
+                </Palette>
+              );
+        }
+        else {
+           return <div></div>
+        }
+    }
+
+
     return (
-      <div
-        className="area"
-        style={{
-          background: `linear-gradient(90deg,
-                 rgb(${colorref.current[0][0]}, ${colorref.current[0][1]}, ${colorref.current[0][2]}),
-                 rgb(${colorref.current[1][0]}, ${colorref.current[1][1]}, ${colorref.current[1][2]}))`,
-        }}
-      >
-        <ul className="circles">
-            {lis()}
-        </ul>
-      </div>
+        getPlayBoard()
     );
 }

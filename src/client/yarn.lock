@@ -2994,6 +2994,17 @@
   "resolved" "https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz"
   "version" "1.1.3"
 
+"color-thief-react@^2.1.0":
+  "integrity" "sha512-2Vr8XnxzoSEz2nUswROWIrxI6joMom4S9TZ5RC69/FR2K87BuXUZk5C4qn6g/rq5bYKx9m+HNjwlCOWIYMAv2A=="
+  "resolved" "https://registry.npmjs.org/color-thief-react/-/color-thief-react-2.1.0.tgz"
+  "version" "2.1.0"
+  dependencies:
+    "color-convert" "^2.0.1"
+    "colorthief" "2.3.2"
+    "prop-types" "15.7.2"
+    "tslib" "2.3.0"
+    "use-current-effect" "2.1.0"
+
 "colord@^2.9.1":
   "integrity" "sha512-Uqbg+J445nc1TKn4FoDPS6ZZqAvEDnwrH42yo8B40JSOgSLxMZ/gt3h4nmCtPLQeXhjJJkqBx7SCY35WnIixaQ=="
   "resolved" "https://registry.npmjs.org/colord/-/colord-2.9.2.tgz"
@@ -3004,7 +3015,7 @@
   "resolved" "https://registry.npmjs.org/colorette/-/colorette-2.0.16.tgz"
   "version" "2.0.16"
 
-"colorthief@^2.3.2":
+"colorthief@^2.3.2", "colorthief@2.3.2":
   "integrity" "sha512-1r4nPW553JviRcFRvN3fS2V9nUSQGjRIws8UfEeFLIxk8j1tvtaX+AAYTkH3A4B5Muiys8SA1WJxf+00xVTXyg=="
   "resolved" "https://registry.npmjs.org/colorthief/-/colorthief-2.3.2.tgz"
   "version" "2.3.2"
@@ -7335,6 +7346,15 @@
     "object-assign" "^4.1.1"
     "react-is" "^16.13.1"
 
+"prop-types@15.7.2":
+  "integrity" "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ=="
+  "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz"
+  "version" "15.7.2"
+  dependencies:
+    "loose-envify" "^1.4.0"
+    "object-assign" "^4.1.1"
+    "react-is" "^16.8.1"
+
 "proxy-addr@~2.0.7":
   "integrity" "sha512-llQsMLSUDUPT44jdrU/O37qlnifitDP+ZwrmmZcoSKyLKvtZxpyV0n2/bD/N4tBAAZ/gJEdZU7KMraoK1+XYAg=="
   "resolved" "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.7.tgz"
@@ -7453,7 +7473,7 @@
     "strip-ansi" "^6.0.1"
     "text-table" "^0.2.0"
 
-"react-dom@*", "react-dom@^17.0.2", "react-dom@>=16.8":
+"react-dom@*", "react-dom@^17.0.2", "react-dom@>= 16.8.0", "react-dom@>=16.8":
   "integrity" "sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-17.0.2.tgz"
   "version" "17.0.2"
@@ -7468,6 +7488,11 @@
   "version" "6.0.10"
 
 "react-is@^16.13.1":
+  "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
+  "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
+  "version" "16.13.1"
+
+"react-is@^16.8.1":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
@@ -7552,7 +7577,7 @@
   optionalDependencies:
     "fsevents" "^2.3.2"
 
-"react@*", "react@^17.0.2", "react@>= 16", "react@>=16.8", "react@17.0.2":
+"react@*", "react@^16.8.0", "react@^17.0.2", "react@>= 16", "react@>= 16.8.0", "react@>=16.8", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"
@@ -8704,6 +8729,11 @@
   "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
   "version" "2.3.1"
 
+"tslib@2.3.0":
+  "integrity" "sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg=="
+  "resolved" "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz"
+  "version" "2.3.0"
+
 "tsutils@^3.21.0":
   "integrity" "sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA=="
   "resolved" "https://registry.npmjs.org/tsutils/-/tsutils-3.21.0.tgz"
@@ -8853,6 +8883,11 @@
   "version" "4.4.1"
   dependencies:
     "punycode" "^2.1.0"
+
+"use-current-effect@2.1.0":
+  "integrity" "sha512-yxSWZsBfohTulb+HyLdSIcUoG5UnSbgNl5SAEtFhzq1yqTeJAa32dZhhO5ACYn7Lc2IGt03pUOkUZZQQX/ReXg=="
+  "resolved" "https://registry.npmjs.org/use-current-effect/-/use-current-effect-2.1.0.tgz"
+  "version" "2.1.0"
 
 "util-deprecate@^1.0.1", "util-deprecate@^1.0.2", "util-deprecate@~1.0.1":
   "integrity" "sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8="
