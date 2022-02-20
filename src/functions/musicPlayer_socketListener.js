@@ -9,31 +9,38 @@ function Listener(socket, io, client) {
 
     let guildId
 
-    socket.on('requestData', s => {
+    socket.on('requestData', (s, callback) => {
         guildId = s
-        
         if(Players.has(guildId)) {
             const guildSpace = io.of(`/${guildId}`)
-            guildSpace.emit('fetchData', Players.get(guildId).getData())
+            callback (
+                Players.get(guildId).getData()
+            )
+            // guildSpace.emit('fetchData', Players.get(guildId).getData())
+        }
+        else {
+            callback (
+                []
+            )
         }
     })
 
-    socket.on('pause', s => {
+    socket.on('pause', (s, callback) => {
         guildId = s.guildId
         pause(guildId)
     })
 
-    socket.on('unpause', s => {
+    socket.on('unpause', (s, callback) => {
         guildId = s.guildId
         unpause(guildId)
     })
 
-    socket.on('skip', s => {
+    socket.on('skip', (s, callback) => {
         guildId = s.guildId
         skip(guildId)
     })
 
-    socket.on('repeat', s => {
+    socket.on('repeat', (s, callback) => {
         guildId = s.guildId
         repeat(guildId, s.repeat)
     })

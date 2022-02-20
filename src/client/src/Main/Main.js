@@ -8,6 +8,8 @@ import Menu from './Menu'
 import Board from './Board'
 import StatusBoard from './StatusBoard'
 import Alert from './Alert'
+import PlayBoard from './PlayBoard'
+import {defaultSocket} from '../socket'
 
 
 function Main() {
@@ -16,6 +18,7 @@ function Main() {
 
     return (
         <div className='container'>
+            <PlayBoard guildId={param.guildId}/>
             <Queue guildId={param.guildId}/>
             <Controller guildId={param.guildId} />
             <Menu guildId={param.guildId} personalId={param.personalId}/>

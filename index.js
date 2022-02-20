@@ -76,6 +76,7 @@ client.on('interactionCreate', async interaction => {
 // client.login(process.env.BOT_TOKEN)
 
 const config = require('./config.json');
+const { isObject } = require('util');
 client.login(config.BOT_TOKEN)
 
 module.exports = {

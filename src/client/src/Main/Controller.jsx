@@ -2,6 +2,7 @@ import './Controller.css'
 import { io } from 'socket.io-client'
 import { useEffect, useState, useRef } from 'react'
 import { defaultSocket, guildSocket } from '../socket'
+import { fetchData } from '../Util/fetchData'
 
 export default function Controller(params) {
 
@@ -15,23 +16,41 @@ export default function Controller(params) {
 
     useEffect(() => {
         const socket = guildSocket(guildId)
-        defaultSocket.emit('requestData', guildId)
-        socket.on('fetchData', s => {
-            if(s.songrepeat) setRepeat('song')
-            else if(s.queuerepeat) setRepeat('queue')
-            else setRepeat('none')
-            songdura.current = s.queue.length >= 1 ? s.queue[0].duration : 0;
-        })
+        // socket.on('fetchData', s => {
+        //     if(s.songrepeat) setRepeat('song')
+        //     else if(s.queuerepeat) setRepeat('queue')
+        //     else setRepeat('none')
+        //     songdura.current = s.queue.length >= 1 ? s.queue[0].duration : 0;
+        // })
         socket.on('MUSIC_PLAYER_REPEAT', s => {
             if(s.songrepeat) setRepeat('song')
             else if(s.queuerepeat) setRepeat('queue')
             else setRepeat('none')
         })
         socket.on(`MUSIC_PLAYBACKDURATION`, s => {
-            defaultSocket.emit('requestData', guildId)
+            fetching()
             setDura(s)
         })
+
+        fetching()
+
+
+        // defaultSocket.emit('requestData', guildId, (response) => {
+        //     if(response.songrepeat) setRepeat('song')
+        //     else if(response.queuerepeat) setRepeat('queue')
+        //     else setRepeat('none')
+        //     songdura.current = response.queue.length >=1 ? response.queue[0].duration : 0;
+        // })
     }, [])
+
+    const fetching = () => {
+        fetchData(guildId).then((response) => {
+            if (response.songrepeat) setRepeat("song");
+            else if (response.queuerepeat) setRepeat("queue");
+            else setRepeat("none");
+            songdura.current = response.queue.length >=1 ? response.queue[0].duration : 0;
+        })
+    }
 
     const cycleRepeat = () => {
         let data
@@ -58,7 +77,7 @@ export default function Controller(params) {
             }
         }
 
-        defaultSocket.emit('repeat', data)
+        defaultSocket.emit('repeat', data, (response) => {})
     }
 
     const enter = () => {
@@ -73,13 +92,13 @@ export default function Controller(params) {
         if(pause) {
             defaultSocket.emit('unpause', {
                 guildId: guildId
-            })
+            }, (response) => {})
             setPause(false)
         }
         else {
             defaultSocket.emit('pause', {
                 guildId: guildId,
-            })
+            }, (response) => {})
             setPause(true)
         }
         console.log('click pause')
@@ -88,7 +107,7 @@ export default function Controller(params) {
     const skip = () => {
         defaultSocket.emit('skip', {
             guildId: guildId
-        })
+        }, (response) => {})
         setPause(false)
     }
 

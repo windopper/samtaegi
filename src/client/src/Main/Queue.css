@@ -1,12 +1,25 @@
 .queue-info {
     z-index: 100;
-    position: fixed;
-    background-color: #efddff;
+    color: white;
     opacity: 0.8;
-    height: 40px;
-    width: calc(100% - 90px);
+    height: 80px;
+    width: 100%;
     bottom: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
+.queue-info > span {
+    margin: 30px;
+    font-size: xx-large;
+    vertical-align: middle;
+}
+
+.queue-info > span > span {
+    font-size: large;
+}
+
 
 .queue-container {
     background-color: rgb(36, 14, 36);
@@ -16,7 +29,7 @@
     padding: 0;
     left: 90px;
     width: calc(100% - 90px);
-    height: calc((100% - 320px));
+    height: calc(100% - 320px);
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -44,58 +57,39 @@
     /* background-color: rgb(133, 96, 163); */
     position: relative;
     margin-left: 10px;
+    margin-right: 10px;
     padding: 7px;
     left: 10px;
-    width: calc(100% - 30px);
+    width: calc(100% - 50px);
     height: 47px;
     display: flex;
     align-items: center;
     border-bottom: 1px solid white;
+    cursor: pointer;
+    transition: ease;
+    transition-duration: 0.5s;
+}
+
+.queue:hover {
+    background: linear-gradient(0.25turn, rgb(167, 167, 167), 20%, rgb(36, 14, 36));
 }
 
 .queue:last-child {
     border-bottom: 0px
 }
 
-@keyframes disappear {
-    from {
-
-        padding: 5px;
-        height: 50px;
-        color: white;
-    }
-    to {
-        font-size: 0;
-        padding: 0px;
-        height: 0px;
-        margin: 0px;
-        color: transparent;
-    }
-}
-
-.queue.disappear {
-    height: 0px;
-    margin: 0px;
-    animation: disappear;
-    animation-duration: 0.5s;
-}
-
-.queue.disappear > span {
-    font-size: 0;
-    animation: disappear;
-    animation-duration: 0.5s;
-}
-
-.queue.disappear > img {
-    height: 0px;
-    animation: disappear;
-    animation-duration: 0.5s;
-}
-
 .queue > span {
     color: white;
     position: relative;
     font-weight: 500;
-    margin: 10px;
-    left: 15px;
+    margin: 0 20px 0 20px;
+    
+}
+
+.queue > span:last-child {
+    position: absolute;
+    font-weight: 200;
+    width: fit-content;
+    height: fit-content;
+    right: 10px;
 }

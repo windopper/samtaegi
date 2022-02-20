@@ -3,6 +3,7 @@
     height: 100vh;
     width: 90px;
     background-color: black;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;

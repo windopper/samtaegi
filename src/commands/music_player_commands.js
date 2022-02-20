@@ -22,7 +22,7 @@ function listener(interaction, io) {
         }
         else if(commandName === 'disconnect') {
              player.disconnect(interaction);
-             Players.delete(guildId)
+             
         }
         else if(commandName === 'stop') {
             player.stop(interaction);
