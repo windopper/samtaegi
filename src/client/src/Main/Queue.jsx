@@ -13,41 +13,49 @@ export default function Queue(params) {
     const guildId = params.guildId
     const [queue, setQueue] = useState([])
     const fulltimeref = useRef('0')
-    const repeat = useRef('')
+    const [repeat, setRepeat] = useState('NONE')
 
     useEffect(() => {
         let time_2 = 0
+
         const cleanUp = () => {
             clearTimeout(time_2)
         }
+
         let socket = guildSocket(guildId)
 
         socket.on('MUSIC_PROCESS_QUEUES', s => {
             time_2 = setTimeout(() => {
-                let fulltime = 0
-                s.forEach((v) => fulltime += v.duration)
-                fulltimeref.current = fulltime
-
+                setfulltime(s)
                 setQueue(s)
             }, 800)
         })
+        
         socket.on('MUSIC_UPDATE_QUEUES', s => {
+            setfulltime(s)
             setQueue(s)
         })
 
-        fetchData(guildId).then((response) => {
-            console.log(response.queue.length)
-            let fulltime = 0
-            response.queue.forEach((v) => fulltime += v.duration)
-            fulltimeref.current = fulltime
-            repeat.current = CheckRepeat(response.queuerepeat, response.songrepeat)
+        socket.on('MUSIC_PLAYER_REPEAT', s => {
+            setRepeat(CheckRepeat(s.queuerepeat, s.songrepeat))
+        })
 
+        fetchData(guildId).then((response) => {
+            setRepeat(CheckRepeat(response.queuerepeat, response.songrepeat))
+            setfulltime(response.queue)
             setQueue(response.queue)
         })
+
         return (
             cleanUp()
         )
     }, [])
+
+    const setfulltime = (queue) => {
+        let fulltime = 0
+        queue.forEach((v) => fulltime += v.duration)
+        fulltimeref.current = fulltime
+    }
     
     const queues = () => {
         const divs = []
@@ -72,7 +80,7 @@ export default function Queue(params) {
     return (
         <div className='queue-container'> 
             <div className='queue-info'>
-                <span>{`${queue.length} Tracks`} <span><i className="fa-solid fa-repeat"/> {repeat.current}</span></span>
+                <span>{`${queue.length} Tracks`} <span><i className="fa-solid fa-repeat"/> {repeat}</span></span>
                 <span>{`${secToHMS(fulltimeref.current)}`}</span>
             </div>
         {

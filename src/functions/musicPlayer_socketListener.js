@@ -5,18 +5,16 @@ const musicPlayer_socketEmitter = require('./musicPlayer_socketEmitter')
 const musicSearch = require("./musicSearch")
 const addQueue = require('./addQueue')
 
-function Listener(socket, io, client) {
+async function Listener(socket, io, client) {
 
     let guildId
 
     socket.on('requestData', (s, callback) => {
         guildId = s
         if(Players.has(guildId)) {
-            const guildSpace = io.of(`/${guildId}`)
             callback (
                 Players.get(guildId).getData()
             )
-            // guildSpace.emit('fetchData', Players.get(guildId).getData())
         }
         else {
             callback (
@@ -45,18 +43,24 @@ function Listener(socket, io, client) {
         repeat(guildId, s.repeat)
     })
 
-    socket.on('REQUEST_GUILD_ICON', s => {
+    socket.on('REQUEST_GUILD_ICON', (callback) => {
         let guildIds = Players.keys()
         const iconUrls = []
         for(let guildId of guildIds) {
             iconUrls.push(client.guilds.cache.get(guildId).iconURL())
         }
-        emitGuildIcon(iconUrls, guildId, io)
+        callback(
+            iconUrls
+        )
+        // emitGuildIcon(iconUrls, guildId, io)
     })
 
-    socket.on('SEARCH_YOUTUBE', s => {
-        guildId = s.guildId
-        musicSearch.YoutubeSearch(s, io)
+    socket.on('SEARCH_YOUTUBE', (s, callback) => {
+        let value = musicSearch.YoutubeSearch(s.value, callback)
+    })
+
+    socket.on('SEARCH_SOUNDCLOUD', (s, callback) => {
+        let value = musicSearch.SoundCloudSearch(s.value, callback)
     })
 
     socket.on('DEPLOY_QUEUE', s => {

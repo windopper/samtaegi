@@ -16,12 +16,7 @@ export default function Controller(params) {
 
     useEffect(() => {
         const socket = guildSocket(guildId)
-        // socket.on('fetchData', s => {
-        //     if(s.songrepeat) setRepeat('song')
-        //     else if(s.queuerepeat) setRepeat('queue')
-        //     else setRepeat('none')
-        //     songdura.current = s.queue.length >= 1 ? s.queue[0].duration : 0;
-        // })
+
         socket.on('MUSIC_PLAYER_REPEAT', s => {
             if(s.songrepeat) setRepeat('song')
             else if(s.queuerepeat) setRepeat('queue')
@@ -33,14 +28,6 @@ export default function Controller(params) {
         })
 
         fetching()
-
-
-        // defaultSocket.emit('requestData', guildId, (response) => {
-        //     if(response.songrepeat) setRepeat('song')
-        //     else if(response.queuerepeat) setRepeat('queue')
-        //     else setRepeat('none')
-        //     songdura.current = response.queue.length >=1 ? response.queue[0].duration : 0;
-        // })
     }, [])
 
     const fetching = () => {

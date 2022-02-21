@@ -1,15 +1,31 @@
 const playdl = require("play-dl")
 const socketEmitter = require('./musicPlayer_socketEmitter')
 
-async function YoutubeSearch(param, io) {
-    const search = param.value
-    const guildId = param.guildId
-    const personalId = param.personalId
-    const searched = await playdl.search(search, { source: { youtube: 'video'}})
-    socketEmitter.emitSearchData(searched, personalId, guildId, io)
-    console.log(searched.length)
+async function YoutubeSearch(search, callback) {
+    await playdl.search(search, { source: { youtube: 'video'}})
+        .then(v => {
+            console.log(v.length)
+            callback (
+                v
+            )
+        })
+}
+
+async function SoundCloudSearch(text, callback) {
+    await playdl.getFreeClientID().then((clientID) => playdl.setToken({
+        soundcloud: {
+            client_id: clientID
+        }
+    }))
+    await playdl.search(text, { source: { soundcloud: 'tracks'}})
+        .then(v => {
+            callback(
+                v
+            )
+        })
 }
 
 module.exports = {
-    YoutubeSearch: YoutubeSearch
+    YoutubeSearch: YoutubeSearch,
+    SoundCloudSearch: SoundCloudSearch
 }

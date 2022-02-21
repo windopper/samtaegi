@@ -15,3 +15,23 @@ export function fetchGuildIcon() {
         })
     })
 }
+
+export function fetchYouTubeData(search) {
+    return new Promise((resolve, reject) => {
+        defaultSocket.emit('SEARCH_YOUTUBE', {
+            value: search
+        },(response) => {
+            resolve(response)
+        })
+    })
+}
+
+export function fetchSoundCloudData(search) {
+    return new Promise((resolve, reject) => {
+        defaultSocket.emit('SEARCH_SOUNDCLOUD', {
+            value: search
+        },(response) => {
+            resolve(response)
+        })
+    })
+}

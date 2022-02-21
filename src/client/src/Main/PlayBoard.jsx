@@ -16,6 +16,11 @@ export default function PlayBoard(params) {
         let socket = guildSocket(guildId)
 
         socket.on('MUSIC_PROCESS_QUEUES', s => {
+            console.log('processing')
+            fetch()
+        })
+
+        socket.on('MUSIC_UPDATE_QUEUES', s => {
             fetch()
         })
  
@@ -61,22 +66,42 @@ export default function PlayBoard(params) {
         );
     }
 
+    const getColorComponent = (data) => {
+        return (
+            <div
+            className="area"
+            style={{
+              background: `linear-gradient(90deg,
+               ${color[0]},
+               ${color[1]})`,
+            }}
+            >
+            <ul className="circles">{lis(data)}</ul>
+            </div>
+        )
+    }
+
     const getPlayBoard = () => {
         if(info.length > 0) {
-            return (
-                <Palette src={info[0].thumbnails} colorCount={3} crossOrigin='anonymous' format='rgbString'>
-                  {({ data, loading }) => {
-                      if(data == undefined) {
-                          return getComponent(color)
-                      } else {
-                          return getComponent(data)
-                      }
-                  }}
-                </Palette>
-              );
+            try {
+                return (
+                    <Palette src={info[0].thumbnails} colorCount={3} crossOrigin='anonymous' format='rgbString'>
+                      {({ data, loading }) => {
+                          if(data == undefined) {
+                              return getColorComponent(color)
+                          } else {
+                              return getComponent(data)
+                          }
+                      }}
+                    </Palette>
+                  );
+            }
+            catch(err) {
+                return getColorComponent(color)
+            }
         }
         else {
-           return <div></div>
+           return getColorComponent(color)
         }
     }
 

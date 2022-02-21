@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react'
 import './Menu.css'
 import { io, Socket } from 'socket.io-client'
 import { defaultSocket, guildSocket } from '../socket'
+import { fetchYouTubeData, fetchSoundCloudData } from '../Util/fetchData'
 
 export default function Menu(param) {
 
@@ -35,14 +36,23 @@ export default function Menu(param) {
         })
     }, [])
 
+    useEffect(() => {
+      if(engine == 'yt') {
+        fetchYouTubeData(text.current).then(v => {
+          setSearchData(v)
+        })
+      }
+      else if(engine == 'soundcloud') {
+        fetchSoundCloudData(text.current).then(v => setSearchData(v))
+      }
+    }, [engine])
+
     const openSearching = () => {
         if(!searching) {
             searchBoard.current = 'searchboard'
             setSearching(true)
         }
-
     }
-
     const closeSearching = () => {
         if(searching) {
             searchBoard.current = 'searchboard disappear'
@@ -53,7 +63,6 @@ export default function Menu(param) {
                 setSearching(false)
             }, 500)
         }
-
     }
 
     const onChange = (e) => {
@@ -63,13 +72,21 @@ export default function Menu(param) {
             setLoading(true)
             openSearching()
             clearTimeout(timeref.current)
-            timeref.current = setTimeout(() => {
-                defaultSocket.emit('SEARCH_YOUTUBE', {
-                    personalId: personalId,
-                    guildId: guildId,
-                    value: _text
+            if(engine == 'yt') {
+              timeref.current = setTimeout(() => {
+                fetchYouTubeData(_text).then(v => {
+                  setSearchData(v)
                 })
-            }, 500)
+                setLoading(false)
+              }, 500)
+            }
+            else if(engine == 'soundcloud') {
+              timeref.current = setTimeout(() => {
+                fetchSoundCloudData(_text).then(v => setSearchData(v))
+                setLoading(false)
+              }, 500)
+
+            }
         }
         else {
             closeSearching()
@@ -78,11 +95,14 @@ export default function Menu(param) {
 
     const handleClickSearch = () => {
         openSearching()
-        defaultSocket.emit('SEARCH_YOUTUBE', {
-            personalId: personalId,
-            guildId: guildId,
-            value: text.current
-        })
+        if(engine == 'yt') {
+          fetchYouTubeData(text.current).then(v => {
+            setSearchData(v)
+          })
+        }
+        else if(engine == 'soundcloud') {
+          fetchSoundCloudData(text.current).then(v => setSearchData(v))
+        }
     }
 
     function handleSendQueue(url) {
@@ -94,27 +114,90 @@ export default function Menu(param) {
         }) 
     }
         
-    const getSearchDatas = () => {
+    const getYTSearchDatas = () => {
         const divs = []
-        console.log(searchData.length)
-        let num = 0
-        for(let data of searchData) {
-            let title = data.title
-            if(title.length > 40) title = title.substr(0, 39) + '...'
-            divs.push(
-              <div key={num} onClick={() => handleSendQueue(data.url)}>
-                <img src={data.thumbnail.url} alt="x" />
-                <div>
-                  <span>{title}</span>
-                  <span>{data.channel.name}</span>
+        try {
+          let num = 0
+          for(let data of searchData) {
+              let title = data.title
+              if(title.length > 40) title = title.substr(0, 39) + '...'
+              divs.push( 
+                <div key={num} onClick={() => handleSendQueue(data.url)}>
+                  <img src={data.thumbnail.url} alt="x" />
+                  <div>
+                    <span>{title}</span>
+                    <span>{data.channel.name}</span>
+                  </div>
                 </div>
-              </div>
-            );
-            num++
+              );
+              num++
+          }
+          return (
+              divs
+          )
         }
-        return (
-            divs
-        )
+        catch(err) {
+          return
+        }
+
+    }
+
+    const getSOSearchDatas = () => {
+      const divs = []
+      
+      try {
+        let num = 0;
+        for (let data of searchData) {
+          let title = data.name;
+
+          if (title.length > 40) title = title.substr(0, 39) + "...";
+          divs.push(
+            <div key={num} onClick={() => handleSendQueue(data.url)}>
+              <img src={data.thumbnail} alt="x" />
+              <div>
+                <span>{title}</span>
+                <span>{data.user.name}</span>
+              </div>
+            </div>
+          );
+          num++;
+        }
+        return divs;
+      }
+      catch(err) {
+        return 
+      }
+
+  }
+
+    const checkmark = () => {
+      return (
+        <div className={`wrapper`}>
+        {" "}
+        <svg
+          className="checkmark"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 52 52"
+        >
+          <circle
+            className="checkmark__circle"
+            cx="26"
+            cy="26"
+            r="25"
+            fill="none"
+          />
+          <path
+            className="checkmark__check"
+            fill="none"
+            d="M14.1 27.2l7.1 7.2 16.7-16.8"
+          />
+        </svg>
+      </div>
+      )
+    }
+
+    const settingcontainer = () => {
+
     }
 
     const searchBoardContent = () => {
@@ -122,49 +205,47 @@ export default function Menu(param) {
           <div className={searchBoard.current}>
             {loading && searching ? (
               <div className={!deploycomplete ? `loading` : `loading anim`}>
-
-                {deploycomplete ? (
-                  <div className={`wrapper`}>
-                    {" "}
-                    <svg
-                      className="checkmark"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 52 52"
-                    >
-                      <circle
-                        className="checkmark__circle"
-                        cx="26"
-                        cy="26"
-                        r="25"
-                        fill="none"
-                      />
-                      <path
-                        className="checkmark__check"
-                        fill="none"
-                        d="M14.1 27.2l7.1 7.2 16.7-16.8"
-                      />
-                    </svg>
-                  </div>
-                ) : null}
-
+                {deploycomplete ? checkmark() : null}
               </div>
             ) : null}
             {searching ? (
-                <div>
-                    <i className="fa-brands fa-youtube" id='youtube' style={{
-                        color: `${engine == 'yt' ? 'red' : 'black'}`
-                    }} onClick={() => setEngine('yt')}></i>
-                    <i className="fa-brands fa-soundcloud" id='soundcloud' style={{
+              <div>
+                <i
+                  className="fa-brands fa-youtube"
+                  id="youtube"
+                  style={{
+                    color: `${engine == "yt" ? "red" : "black"}`,
+                  }}
+                  onClick={() => setEngine("yt")}
+                ></i>
 
-                    }} onClick={() => setEngine('soundcloud')}></i>
-                    <div className='search-text'>{`'${text.current}'  검색결과`}</div>
-                </div>
+                {/* <div className="switch-wrapper">
+                  <input type="checkbox" id="switch" />
+                  <label htmlFor="switch" className="switch_label">
+                    <span className="onf_btn"></span>
+                  </label>
+                </div> */}
+
+                <i
+                  className="fa-brands fa-soundcloud"
+                  id="soundcloud"
+                  style={{
+
+                  }}
+                  onClick={() => setEngine("soundcloud")}
+                ></i>
+
+
+                <div className="search-text">{`'${text.current}'  검색결과`}</div>
+              </div>
             ) : null}
             {searching ? (
               <div className="close" onClick={closeSearching}></div>
             ) : null}
             {searching ? (
-              <div className="search-container">{getSearchDatas()}</div>
+              <div className="search-container">{
+                engine == 'yt' ? getYTSearchDatas() : getSOSearchDatas()
+              }</div>
             ) : null}
           </div>
         );

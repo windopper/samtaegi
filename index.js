@@ -33,8 +33,6 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('new connection!')
-    console.log(music_player_commands.Players.size)
-
     PlayerSocketListener(socket, io, client)
 })
 
@@ -49,7 +47,7 @@ client.on('ready', () => {
         type: 'PLAYING'
     })
 
-    setInterval(() => server.getConnections((er, n) => console.log(n)), 2000)
+    // setInterval(() => server.getConnections((er, n) => console.log(n)), 2000)
 
     // deploy_commands()
 });

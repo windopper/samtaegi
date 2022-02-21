@@ -48,7 +48,7 @@ async function addMusicToQueue(url, interaction, player) {
         content: alert.positive('**'+queue.title+"** 이(가) 성공적으로 큐에 등록되었습니다"),
         components: []
     })
-    socketEmitter.emitQueue(player.queue, player.guildId, player.io)
+    socketEmitter.emitUpdateQueue(player.queue, player.guildId, player.io)
 }
 
 module.exports = {

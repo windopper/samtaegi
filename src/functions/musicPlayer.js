@@ -292,6 +292,8 @@ class MusicManager {
         if(this.queue.length >= 1) {
             if(this.queue[0] != undefined) this.play(this.queue[0].url)
         }
+        else this.audioPlayer.stop()
+        
         socketEmitter.emitProcessQueue(this.queue, this.guildId, this.io)
     }
 
